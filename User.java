@@ -188,11 +188,4 @@ public class User {
         return s;
     } 
     
-    
-    public static void main(String[] args) {
-        User u = new User();
-        u.addFriend(u);
-        System.out.println(u);
-    }
-    
 }
