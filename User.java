@@ -2,17 +2,26 @@ import java.util.*;
 import javax.swing.ImageIcon;
 
 public class User {
-    private ArrayList<User> friends;
-    private ArrayList<User> blocked;
-
-    private static ArrayList<String> usernameArray = new ArrayList<String>();
+    private ArrayList<User> friends = new ArrayList<User>();
+    private ArrayList<User> blocked = new ArrayList<User>();
 
     private String firstName;
     private String lastName;
     private String username;
     private String password;
     
-    private ImageIcon imageIcon;
+    private ImageIcon profilePicture;
+
+    private static ArrayList<String> usernameArray = new ArrayList<String>();
+
+    public User(String firstName, String lastName, String username, String password, ImageIcon profilePicture) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.profilePicture = profilePicture;
+        usernameArray.add(username);
+    }
 
     public User() {
         Scanner s = new Scanner(System.in);
@@ -67,39 +76,123 @@ public class User {
         //upload picture
         System.out.println("Enter the path for your profile picture");
         input = s.nextLine();
-        imageIcon = new ImageIcon(input);
+        profilePicture = new ImageIcon(input);
+
+        s.close();
     }
 
     public String getPassword() { //can be used for password protection login
         return password;
     }
-
+    public String getUsername() {
+        return username;
+    }
     public String getFirstName() {
         return firstName;
     }
     public String getLastName() {
         return lastName;
     }
+    public String getName() {
+        String name = firstName + " " + lastName;
+        return name;
+    }
+    public ImageIcon getProfilePicture() {
+        return profilePicture;
+    }
+    public ArrayList<User> getFriends(){
+        return friends;
+    }
+    public ArrayList<User> getBlocked() {
+        return blocked;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public void setFriends(ArrayList<User> friends) {
+        this.friends = friends;
+    }
+    public void setBlocked(ArrayList<User> blocked) {
+        this.blocked = blocked;
+    }
+    public void setProfilePicure(ImageIcon profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+    public boolean equals(Object other) { //use for user search
+        if (!(other instanceof User)) {
+            return false;
+        }
+
+        User o = (User) other;
+        return o.getUsername().equals(username);
+    }
+    
+    //return true if password changed
+    public boolean setPassword(String oldPass, String newPass) {
+        if (oldPass.equals(password)) { //old password must match in order to change password
+            password = newPass;
+            return true;
+        }
+        return false;
+    }
+
+    //adding a friend
+    public void addFriend(User f) {
+        if(!friends.contains(f)) {
+            friends.add(f);
+        }
+        if(blocked.contains(f)) { //unblocks the user if they were previously blocked
+            blocked.remove(f);
+        }
+    }
+
+    public void blockUser(User b) {
+        if(!blocked.contains(b)) {
+            blocked.add(b);
+        }
+        if(friends.contains(b)) {//removes blocked user from friends list
+            friends.remove(b);
+        }
+    }
+
+    public void unblock(User b) {
+        if(blocked.contains(b)) {
+            blocked.remove(b);
+        }
+    }
+
+    public void removeFriend(User f) {
+        if(friends.contains(f)) {
+            friends.remove(f);
+        }
+    }
+
+    public String toString() { //user profile
+        String s = "------------\n";
+        s += "Name: " + getName() + "\n";
+        s += "Username: " + username + "\n";
+        s += "Profile Picture: " + profilePicture.getDescription() + "\n";
+        s += "Friends: ";
+        if (friends.size() == 0) {
+            s += "None\n";
+        }
+        for (int i = 0 ; i < friends.size(); i++) {
+            if (i == friends.size() - 1) {
+                s += friends.get(i).getName() + "\n";
+            } else {
+                s += friends.get(i).getName() + ", ";
+            }
+        }
+        s += "------------";
+
+        return s;
+    } 
+    
+    
     public static void main(String[] args) {
         User u = new User();
+        u.addFriend(u);
+        System.out.println(u);
     }
     
 }
-
-/*
-User class (Yajushi)
-Arraylist of friends
-Arraylist of blocked people
-
-profile picture
-user profile
-
-
-User profiles.
-Password protected login.
-User search.
-User viewer.
-Add, block, and remove friend features.
-Extra credit opportunity – Add support to upload and display profile pictures.
-
- */
