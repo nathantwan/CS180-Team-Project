@@ -88,7 +88,7 @@ public class Post {
         }
 
     public void editComment(String text, Comment comment, User user) throws InvalidCommentException {
-        if (!(comment.getCommenter.equals(user))) {
+        if (!(comment.getCommenter().equals(user))) {
             System.out.println("You do not have permission!");
             return;
         }
