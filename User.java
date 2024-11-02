@@ -1,7 +1,7 @@
 import java.util.*;
 import javax.swing.ImageIcon;
 
-public class User {
+public class User implements UserInterface{
     private ArrayList<User> friends = new ArrayList<User>();
     private ArrayList<User> blocked = new ArrayList<User>();
 
