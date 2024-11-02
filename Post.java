@@ -1,6 +1,7 @@
 import javax.swing.ImageIcon;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.io.*;
 
 public class Post {
     private String caption;
@@ -8,11 +9,13 @@ public class Post {
     private int upvote;
     private int downvote;
     private User user;
+    private static int counter = 1;
+    private int postNumber;
     private ArrayList<Comment> comments = new ArrayList<>();
 
     //write a constructor that intializes all fields
-    public Post(String caption, ImageIcon image, User user) throws InvalidPostException{
-        if(caption == null || caption.isEmpty() || user == null) {
+    public Post(String caption, ImageIcon image, User user) throws InvalidPostException {
+        if (caption == null || caption.isEmpty() || user == null) {
             throw new InvalidPostException("Invalid Post");
         }
         this.caption = caption;
@@ -20,7 +23,10 @@ public class Post {
         this.user = user;
         this.upvote = 0;
         this.downvote = 0;
+        this.postNumber = counter;
+        counter++;
     }
+
     // if only User parameter given, prompt user to onput fields
     public Post(User user) {
         Scanner scan = new Scanner(System.in);
@@ -37,35 +43,45 @@ public class Post {
         scan.close();
 
     }
+
     //getters and setters
     public String getCaption() {
         return caption;
     }
+
     public String getImage() {
         return image;
     }
+
     public int getUpvote() {
         return upvote;
     }
+
     public int getDownvote() {
         return downvote;
     }
+
     public User getUser() {
         return user;
     }
+
     public void editPost(String newCaption) {
         this.caption = newCaption;
     }
+
     public void incrementUpvote() {
         this.upvote++;
     }
+
     public void incrementDownvote() {
         this.downvote++;
     }
+
     public void setPost(String caption, ImageIcon image) {
         this.caption = caption;
         this.image = image;
     }
+
     public void addComment(String text, User postOwner, User commenter, Post post) {
         try {
             Comment comment = new Comment(text, postOwner, commenter, post);
@@ -74,6 +90,7 @@ public class Post {
             System.out.println("Invalid Comment");
         }
     }
+
     public void deleteComment(Comment comment, User user) {
         if (!(comment.getPostOwner().equals(user)) && !(comment.getCommenter().equals(user))) {
             System.out.println("You do not have permission");
@@ -93,7 +110,7 @@ public class Post {
         }
     }
 
-    public void editComment (String text, Comment comment, User user) throws InvalidCommentException {
+    public void editComment(String text, Comment comment, User user) throws InvalidCommentException {
         int index = -1;
         if (!(comment.getCommenter().equals(user))) {
             System.out.println("You do not have permission!");
@@ -112,17 +129,17 @@ public class Post {
         }
 
 
-
     }
 
     public boolean equals(Object o) {
-        if(!(this == o)) {
+        if (!(this == o)) {
             return false;
         }
         Post compare = (Post) o;
         return compare.getCaption().equals(caption) &&
-        compare.getImage().equals(image) && compare.getUser().equals(user);
+                compare.getImage().equals(image) && compare.getUser().equals(user);
     }
+
     public String toString() { //user profile
         String s = "------------\n";
         s += user.toString();
@@ -132,7 +149,7 @@ public class Post {
         if (comments.size() == 0) {
             s += "None\n";
         }
-        for (int i = 0 ; i < comments.size(); i++) {
+        for (int i = 0; i < comments.size(); i++) {
             if (i == comments.size() - 1) {
                 s += comments.get(i).getText() + "\n";
             } else {
@@ -144,5 +161,23 @@ public class Post {
         return s;
     }
 
+    public int getPostNumer() {
+        return postNumber;
+    }
+    public void writePost() {
+        File f = new File("Post" + postNumber + ".txt");
+        try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
+            pw.write(caption + ", " +  image + ", " + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
+            if(!(comments == null || comments.size() == 0)) {
+                for (Comment comment : comments) {
+                    pw.write(comment.getText() + ", " + comment.getPostOwner() + ", " + comment.getCommenter() + "\n");
+                }
+            }
 
+
+        } catch (Exception e) {
+            System.out.println("Can't print to file");
+        }
+
+    }
 }
