@@ -1,41 +1,48 @@
-public class Comment{
-    private String text;
-    private User postOwner;
-    private User commenter;
-    private Post post;
-    public Comment(String text, User postOwner, User commenter, Post post) throws InvalidCommentException {
-        if (text == null || text.isEmpty()) {
-            throw new InvalidCommentException("Invalid Comment");
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
+public class PostDatabase {
+    private static ArrayList<Post> feed = new ArrayList<>();
+    public PostDatabase () {
+    }
+    public void addPost(String caption, ImageIcon image, User user) {
+        
+        try {
+            Post post = new Post(caption, image, user);
+            feed.add(post);
+        } catch (InvalidPostException e){
+            System.out.println("Invalid Post");
         }
-        this.text = text;
-        this.postOwner = postOwner;
-        this.commenter = commenter;
-        this.post = post;
     }
-    public void setComment(String text) {
-        this.text = text;
-    }
-    public String getText() {
-        return text;
-    }
-    public User getPostOwner() {
-        return postOwner;
-    }
-    public User getCommenter() {
-        return commenter;
-    }
-    public Post getPost() {
-        return post;
-    }
-    public boolean equals(Object o) {
-        if (!(this == o)) {
-            return false;
+    public void editPost(Post post, String caption, ImageIcon image) {
+        int index = -1;
+        for (int i = 0; i < feed.size(); i++) {
+            if (feed.get(i).equals(post)) {
+                index = i;
+                break;
+            }
         }
-        Comment compare = (Comment) o;
-        return compare.getText().equals(text) && 
-        compare.getPostOwner().equals(postOwner) && 
-        compare.getCommenter().equals(commenter) && 
-        compare.getPost().equals(post);
+        if (!(index == -1)) {
+            feed.get(index).setPost(caption, image);
+        } else {
+            System.out.println("Post does not exist");
+        }
+
+        
+    }
+    public void deletePost(Post post) {
+        int index = -1;
+        for (int i = 0; i < feed.size(); i++) {
+            if (feed.get(i).equals(post)) {
+                index = i;
+                break;
+            }
+        }
+        if (!(index == -1)) {
+            feed.remove(index);
+        } else {
+            System.out.println("Post does not exist");
+        }
+        
     }
 
 
