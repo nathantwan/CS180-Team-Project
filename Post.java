@@ -61,6 +61,10 @@ public class Post {
     public void incrementDownvote() {
         this.downvote++;
     }
+    public setPost(String caption, ImageIcon image) {
+        this.caption = caption;
+        this.image = image;
+    }
     public void addComment(String text, User postOwner, User commenter, Post post) {
         try {
             Comment comment = new Comment(text, postOwner, commenter, post);
@@ -99,7 +103,7 @@ public class Post {
             }
         }
         if (!(index == -1)) {
-            comments.get(index).editComment(text);
+            comments.get(index).setComment(text);
         } else {
             System.out.println("Comment does not exist");
         }

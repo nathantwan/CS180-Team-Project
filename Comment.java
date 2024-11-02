@@ -12,7 +12,7 @@ public class Comment{
         this.commenter = commenter;
         this.post = post;
     }
-    public void editComment(String text) {
+    public void setComment(String text) {
         this.text = text;
     }
     public String getText() {
