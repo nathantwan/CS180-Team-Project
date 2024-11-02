@@ -1,7 +1,8 @@
+import java.io.*;
 import java.util.*;
 import javax.swing.ImageIcon;
 
-public class User implements UserInterface{
+public class User implements UserInterface {
     private ArrayList<User> friends = new ArrayList<User>();
     private ArrayList<User> blocked = new ArrayList<User>();
 
@@ -187,5 +188,41 @@ public class User implements UserInterface{
 
         return s;
     } 
+    
+    public ArrayList<Post> displayFeed(ArrayList<Post> posts) {
+        ArrayList<Post> feed = new ArrayList<Post>();
+        for (Post p : posts) {
+            if (friends.contains(p.getUser())) {
+                feed.add(p);
+            }
+        }
+        return feed;
+    }
+    
+    public void writeFile() {
+        String fileName = username + ".txt";
+        try {
+            PrintWriter pw = new PrintWriter(new FileOutputStream(new File(fileName), false));
+            pw.println(username);
+            pw.println("FRIENDS");
+            for (User f : friends) {
+                pw.println(f.getUsername());
+            }
+            pw.println("BLOCKED");
+            for (User b : blocked) {
+                pw.println(b.getUsername());
+            }
+            pw.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("ERROR: File not created");
+        }
+
+    }
+
+    public static void main(String[] args) {
+        User u = new User();
+        u.addFriend(u);
+        System.out.println(u);
+    }
     
 }
