@@ -1,0 +1,11 @@
+username
+FRIENDS
+username1
+username2
+BLOCKED
+username1username2
+FEED
+post1 //filename
+post2
+post3
+post4
