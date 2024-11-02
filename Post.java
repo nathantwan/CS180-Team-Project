@@ -65,6 +65,10 @@ public class Post {
         return user;
     }
 
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+
     public void editPost(String newCaption) {
         this.caption = newCaption;
     }
