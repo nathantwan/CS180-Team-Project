@@ -29,12 +29,12 @@ public class Comment{
     }
     public boolean equals(Object o) {
         if (!(this == o)) {
-            return false
+            return false;
         }
         Comment compare = (Comment) o;
         return compare.getText().equals(text) && 
-        compare.getPostOwner().equals(PostOwner) && 
-        compare.getCommenter.equals(commenter) && 
+        compare.getPostOwner().equals(postOwner) && 
+        compare.getCommenter().equals(commenter) && 
         compare.getPost().equals(post);
     }
 
