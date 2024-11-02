@@ -29,8 +29,8 @@ public class CommentTest1 {
     }
 
     @Test
-    public void editComment() {
-        testComment1.editComment("This is a new comment");
+    public void setComment() {
+        testComment1.setComment("This is a new comment");
         assertEquals("This is a new comment", testComment1.getText());
     }
 
