@@ -5,14 +5,14 @@ public class Comment{
     private Post post;
     public Comment(String text, User postOwner, User commenter, Post post) throws InvalidCommentException {
         if (text == null || text.isEmpty()) {
-            throw new InvalidCommentException("Invalid Comment")
+            throw new InvalidCommentException("Invalid Comment");
         }
         this.text = text;
         this.postOwner = postOwner;
         this.commenter = commenter;
         this.post = post;
     }
-    public void editComment(String text) {
+    public void setComment(String text) {
         this.text = text;
     }
     public String getText() {
