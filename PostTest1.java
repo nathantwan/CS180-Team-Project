@@ -7,7 +7,7 @@ import java.awt.font.ImageGraphicAttribute;
 
 import static org.junit.Assert.*;
 
-public class PostTest {
+public class PostTest1 {
 
     Post testPost1;
     User testUser1;
