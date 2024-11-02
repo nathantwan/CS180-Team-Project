@@ -34,7 +34,7 @@ public class Post {
             System.out.println("Enter your caption");
             caption = scan.nextLine();
             if (caption == null) {
-                System.out.println("Enter a valid caption")
+                System.out.println("Enter a valid caption");
             }
         }
         upvote = 0;
@@ -49,7 +49,7 @@ public class Post {
         return caption;
     }
 
-    public String getImage() {
+    public ImageIcon getImage() {
         return image;
     }
 
