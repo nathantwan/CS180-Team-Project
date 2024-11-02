@@ -2,24 +2,25 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 public interface UserInterface {
-    public String getPassword();
-    public String getUsername();
-    public String getFirstName();
-    public String getLastName();
-    public String getName();
-    public ImageIcon getProfilePicture();
-    public ArrayList<User> getFriends();
-    public ArrayList<User> getBlocked();
-    public void setUsername(String username);
-    public void setFriends(ArrayList<User> friends);
-    public void setBlocked(ArrayList<User> blocked);
-    public void setProfilePicure(ImageIcon profilePicture);
-    public boolean equals(Object other);
-    public boolean setPassword(String oldPass, String newPass);
-    public void addFriend(User f);
-    public void blockUser(User b);
-    public void unblock(User b);
-    public void removeFriend(User f);
-    public String toString();
-
+    String getPassword();
+    String getUsername();
+    String getFirstName();
+    String getLastName();
+    String getName();
+    ImageIcon getProfilePicture();
+    ArrayList<User> getFriends();
+    ArrayList<User> getBlocked();
+    void setUsername(String username);
+    void setFriends(ArrayList<User> friends);
+    void setBlocked(ArrayList<User> blocked);
+    void setProfilePicure(ImageIcon profilePicture);
+    boolean equals(Object other);
+    boolean setPassword(String oldPass, String newPass);
+    void addFriend(User f);
+    void blockUser(User b);
+    void unblock(User b);
+    void removeFriend(User f);
+    String toString();
+    ArrayList<Post> displayFeed(ArrayList<Post> posts);
+    void writeFile();
 }
