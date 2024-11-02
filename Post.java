@@ -1,5 +1,6 @@
 import javax.swing.ImageIcon;
-import java.util.scanner;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Post {
     private String caption;
@@ -12,7 +13,7 @@ public class Post {
     //write a constructor that intializes all fields
     public Post(String caption, ImageIcon image, User user) throws InvalidPostException{
         if(caption == null || caption.isEmpty() || user == null) {
-            throw InvalidPostException("Invalid Post");
+            throw new InvalidPostException("Invalid Post");
         }
         this.caption = caption;
         this.image = image;
@@ -61,15 +62,19 @@ public class Post {
     public void incrementDownvote() {
         this.downvote++;
     }
+    public void setPost(String caption, ImageIcon image) {
+        this.caption = caption;
+        this.image = image;
+    }
     public void addComment(String text, User postOwner, User commenter, Post post) {
         try {
             Comment comment = new Comment(text, postOwner, commenter, post);
             comments.add(comment);
         } catch (InvalidCommentException e) {
-            System.out.println("Invalid Comment")
+            System.out.println("Invalid Comment");
         }
     }
-    public void deleteComment(Comment comment, User user){
+    public void deleteComment(Comment comment, User user) {
         if (!(comment.getPostOwner().equals(user)) && !(comment.getCommenter().equals(user))) {
             System.out.println("You do not have permission");
             return;
@@ -86,8 +91,10 @@ public class Post {
         } else {
             System.out.println("Comment does not exist");
         }
+    }
 
-    public void editComment(String text, Comment comment, User user) throws InvalidCommentException {
+    public void editComment (String text, Comment comment, User user) throws InvalidCommentException {
+        int index = -1;
         if (!(comment.getCommenter().equals(user))) {
             System.out.println("You do not have permission!");
             return;
@@ -99,7 +106,7 @@ public class Post {
             }
         }
         if (!(index == -1)) {
-            comments.get(index).editComment(text);
+            comments.get(index).setComment(text);
         } else {
             System.out.println("Comment does not exist");
         }
@@ -107,7 +114,7 @@ public class Post {
 
 
     }
-    }
+
     public boolean equals(Object o) {
         if(!(this == o)) {
             return false;
@@ -115,6 +122,26 @@ public class Post {
         Post compare = (Post) o;
         return compare.getCaption().equals(caption) &&
         compare.getImage().equals(image) && compare.getUser().equals(user);
+    }
+    public String toString() { //user profile
+        String s = "------------\n";
+        s += user.toString();
+        s += "Caption: " + caption + "\n";
+        s += "Image: " + image.getDescription() + "\n";
+        s += "Comments: ";
+        if (comments.size() == 0) {
+            s += "None\n";
+        }
+        for (int i = 0 ; i < comments.size(); i++) {
+            if (i == comments.size() - 1) {
+                s += comments.get(i).getText() + "\n";
+            } else {
+                s += comments.get(i).getText() + ", ";
+            }
+        }
+        s += "------------";
+
+        return s;
     }
 
 
