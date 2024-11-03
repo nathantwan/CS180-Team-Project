@@ -95,6 +95,10 @@ public class Post {
         this.image = image;
     }
 
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+    
     public void addComment(String text, User postOwner, User commenter, Post post) {
         try {
             Comment comment = new Comment(text, postOwner, commenter, post);
@@ -153,7 +157,7 @@ public class Post {
                 compare.getImage().equals(image) && compare.getUser().equals(user);
     }
 
-    public String toString() { //user profile
+    public String toString() { 
         String s = "------------\n";
         s += user.toString();
         s += "Caption: " + caption + "\n";
