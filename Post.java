@@ -27,13 +27,26 @@ public class Post {
         counter++;
     }
 
+    public Post(String caption, ImageIcon image, User user, int upvote, int downvote) throws InvalidPostException {
+        if (caption == null || caption.isEmpty() || user == null) {
+            throw new InvalidPostException("Invalid Post");
+        }
+        this.caption = caption;
+        this.image = image;
+        this.user = user;
+        this.upvote = upvote;
+        this.downvote = downvote;
+        this.postNumber = counter;
+        counter++;
+    }
+
     // if only User parameter given, prompt user to onput fields
     public Post(User user) {
         Scanner scan = new Scanner(System.in);
-        while (caption == null) {
+        while (caption == null || caption.length() == 0) {
             System.out.println("Enter your caption");
             caption = scan.nextLine();
-            if (caption == null) {
+            if (caption == null || caption.length() == 0) {
                 System.out.println("Enter a valid caption");
             }
         }
@@ -65,10 +78,6 @@ public class Post {
         return user;
     }
 
-    public ArrayList<Comment> getComments() {
-        return comments;
-    }
-
     public void editPost(String newCaption) {
         this.caption = newCaption;
     }
@@ -86,6 +95,10 @@ public class Post {
         this.image = image;
     }
 
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+    
     public void addComment(String text, User postOwner, User commenter, Post post) {
         try {
             Comment comment = new Comment(text, postOwner, commenter, post);
@@ -144,7 +157,7 @@ public class Post {
                 compare.getImage().equals(image) && compare.getUser().equals(user);
     }
 
-    public String toString() { //user profile
+    public String toString() { 
         String s = "------------\n";
         s += user.toString();
         s += "Caption: " + caption + "\n";
@@ -165,13 +178,14 @@ public class Post {
         return s;
     }
 
-    public int getPostNumer() {
+    public int getPostNumber() {
         return postNumber;
     }
     public void writePost() {
         File f = new File("Post" + postNumber + ".txt");
         try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
-            pw.write(caption + ", " +  image + ", " + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
+            String im = (image == null) ? "null" : image.getDescription();
+            pw.write(caption + ", " +  im + ", " + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
             if(!(comments == null || comments.size() == 0)) {
                 for (Comment comment : comments) {
                     pw.write(comment.getText() + ", " + comment.getPostOwner() + ", " + comment.getCommenter() + "\n");
@@ -180,8 +194,9 @@ public class Post {
 
 
         } catch (Exception e) {
-            System.out.println("Can't print to file");
+            System.out.println("File not created");
         }
 
     }
+
 }
