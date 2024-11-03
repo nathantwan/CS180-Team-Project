@@ -1,4 +1,4 @@
-public class Comment{
+public class Comment implements CommentInterface {
     private String text;
     private User postOwner;
     private User commenter;
