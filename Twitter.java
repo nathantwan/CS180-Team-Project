@@ -4,7 +4,7 @@ import java.util.*;
 import javax.swing.ImageIcon;
 
 
-public class Twitter {
+public class Twitter implements TwitterInterface{
    private ArrayList<User> users = new ArrayList<User>();
    private ArrayList<Post> posts = new ArrayList<Post>();
    private final String MENU = "1 - Add a friend\n" + "2 - Remove a friend\n"
