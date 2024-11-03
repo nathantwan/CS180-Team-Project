@@ -7,13 +7,13 @@ import javax.swing.ImageIcon;
 public class Twitter {
    private ArrayList<User> users = new ArrayList<User>();
    private ArrayList<Post> posts = new ArrayList<Post>();
-   private final String MENU = "1 - add a friend\n" + "2 - remove a friend\n"
-                            + "3 - block a user\n" + "4 - unblock a user\n" + 
-                            "5 - view a user profile\n" + "6 - view feed\n" +
-                            "7 - create a post\n" + "8 - delete a post\n" + 
-                            "9 - edit a post\n" + "10 - edit a post\n" + "11 - create a comment\n" + 
-                            "12 - delete a comment\n" + "13 - edit a comment\n" + "14 - upvote a post\n" + 
-                            "15 - downvote a post\n" + "16 - exit";
+   private final String MENU = "1 - Add a friend\n" + "2 - Remove a friend\n"
+                            + "3 - Block a user\n" + "4 - Unblock a user\n" + 
+                            "5 - View a user profile\n" + "6 - View feed\n" +
+                            "7 - Create a post\n" + "8 - Delete a post\n" + 
+                            "9 - Edit a post\n" + "10 - Create a comment\n" + 
+                            "11 - Delete a comment\n" + "12 - Edit a comment\n" + "13 - Upvote a post\n" + 
+                            "14 - Downvote a post\n" + "15 - Exit";
 
     public Twitter(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) {
         readFile(usernameFile, userFiles, postFiles);
@@ -209,7 +209,178 @@ public class Twitter {
                     System.out.println("Friend removed.");
                 }
             }
-            if(option == 16) {
+            if (option == 3) {
+                System.out.println("Please enter the username of the user you would like to block: ");
+                String username = s.nextLine();
+                User blocked = getUser(username);
+                if (blocked == null) {
+                    System.out.println("Error: Invalid username");
+                } else {
+                    user.blockUser(blocked);
+                    System.out.println("User blocked.");
+                }
+            }
+            if (option == 4) {
+                System.out.println("Please enter the username of the user you would like to unblock: ");
+                String username = s.nextLine();
+                User blocked = getUser(username);
+                if (blocked == null) {
+                    System.out.println("Error: Invalid username");
+                } else {
+                    user.unblock(blocked);
+                    System.out.println("User unblocked.");
+                }
+            }
+            if (option == 5) {
+                System.out.println("Please enter the username of the user you would like to view: ");
+                String username = s.nextLine();
+                User other = getUser(username);
+                if (other == null) {
+                    System.out.println("Error: Invalid username");
+                } else {
+                    System.out.println(other);
+                }
+            }
+            if (option == 6) {
+                ArrayList<Post> feed = user.displayFeed(posts);
+                if (feed.size() == 0) {
+                    System.out.println("There are no posts in your feed.");
+                }
+                for (Post p : feed) {
+                    System.out.println(p);
+                }
+            }
+            if (option == 7) {
+                Post p = new Post(user);
+                posts.add(p);
+            }
+            if (option == 8) {
+                System.out.println("Please enter the number of the post you would like to delete (Note the first post is number 0):");
+                int postNum = s.nextInt(); s.nextLine();
+                if (postNum < 0 || postNum >= posts.size()) {
+                    System.out.println("Error: Post could not be found");
+                } else {
+                    Post p = posts.get(postNum);
+                    if (p.getUser().equals(user) == false) {
+                        System.out.println("Error: You do not have the permissions to delete this post");
+                    } else {
+                        posts.remove(p);
+                        System.out.println("Post deleted");
+                    }
+                }
+            }
+            if (option == 9) {
+                System.out.println("Please enter the number of the post you would like to edit (Note the first post is number 0):");
+                int postNum = s.nextInt(); s.nextLine();
+                if (postNum < 0 || postNum >= posts.size()) {
+                    System.out.println("Error: Post could not be found");
+                } else {
+                    Post p = posts.get(postNum);
+                    if (p.getUser().equals(user) == false) {
+                        System.out.println("Error: You do not have the permissions to edit this post");
+                    } else {
+                        System.out.println("Enter the new caption");
+                        String caption = s.nextLine();
+                        if (caption == null || caption.length() == 0) {
+                            System.out.println("Error: Invalid caption");
+                        } else {
+                            p.editPost(caption);
+                            System.out.println("Post edited");
+                        }
+                        
+                    }
+                }
+            }
+            if (option == 10) {
+                System.out.println("Please enter the number of the post you would like to comment on (Note the first post is number 0):");
+                int postNum = s.nextInt(); s.nextLine();
+                if (postNum < 0 || postNum >= posts.size()) {
+                    System.out.println("Error: Post could not be found");
+                } else {
+                    Post p = posts.get(postNum);
+                    System.out.println("Enter the comment");
+                        String caption = s.nextLine();
+                        if (caption == null || caption.length() == 0) {
+                            System.out.println("Error: Invalid comment");
+                        } else {
+                            p.addComment(caption, p.getUser(), user, p);
+                            System.out.println("Comment created");
+                        }
+                }
+            }
+            if (option == 11) {
+                System.out.println("Please enter the number of the post you would like to delete the comment on (Note the first post is number 0):");
+                int postNum = s.nextInt(); s.nextLine();
+                if (postNum < 0 || postNum >= posts.size()) {
+                    System.out.println("Error: Post could not be found");
+                } else {
+                    Post p = posts.get(postNum);
+                    System.out.println("Please enter the number of the comment you would like to delete (Note the first comment in number 0):");
+                    int commentNum = s.nextInt(); s.nextLine();
+                    if (commentNum < 0 || commentNum >= p.getComments().size()) {
+                        System.out.println("Error: Comment could not be found");
+                    } else {
+                        Comment comment = p.getComments().get(commentNum);
+                        if (comment.getCommenter().equals(user) == false && comment.getPostOwner().equals(user) == false) {
+                            System.out.println("Error: You do not have the permissions to delete this comment");
+                        } else {
+                            p.getComments().remove(comment);
+                            System.out.println("Comment deleted");
+                        }
+                    }
+                }
+            }
+            if (option == 12) {
+                System.out.println("Please enter the number of the post you would like to edit the comment on (Note the first post is number 0):");
+                int postNum = s.nextInt(); s.nextLine();
+                if (postNum < 0 || postNum >= posts.size()) {
+                    System.out.println("Error: Post could not be found");
+                } else {
+                    Post p = posts.get(postNum);
+                    System.out.println("Please enter the number of the comment you would like to edit (Note the first comment in number 0):");
+                    int commentNum = s.nextInt(); s.nextLine();
+                    if (commentNum < 0 || commentNum >= p.getComments().size()) {
+                        System.out.println("Error: Comment could not be found");
+                    } else {
+                        Comment comment = p.getComments().get(commentNum);
+                        if (comment.getCommenter().equals(user) == false) {
+                            System.out.println("Error: You do not have the permissions to edit this comment");
+                        } else {
+                            System.out.println("Enter the new comment");
+                            String newComment = s.nextLine();
+                            if (newComment == null || newComment.length() == 0) {
+                                System.out.println("Error: Invalid comment");
+                            } else {
+                                comment.setComment(newComment);
+                                System.out.println("Comment edited");
+                            }
+                        }
+                    }
+                }
+            }
+            if (option == 13) {
+                System.out.println("Please enter the number of the post you would like to upvote (Note the first post is number 0):");
+                int postNum = s.nextInt(); s.nextLine();
+                if (postNum < 0 || postNum >= posts.size()) {
+                    System.out.println("Error: Post could not be found");
+                } else {
+                    Post p = posts.get(postNum);
+                    p.incrementUpvote();
+                    System.out.println("Post upvoted");
+                }
+            }
+            if (option == 14) {
+                System.out.println("Please enter the number of the post you would like to downvote (Note the first post is number 0):");
+                int postNum = s.nextInt(); s.nextLine();
+                if (postNum < 0 || postNum >= posts.size()) {
+                    System.out.println("Error: Post could not be found");
+                } else {
+                    Post p = posts.get(postNum);
+                    p.incrementDownvote();
+                    System.out.println("Post downvoted");
+                }
+            }
+            if(option == 15) {
                 writeFile();
                 return;
             }
