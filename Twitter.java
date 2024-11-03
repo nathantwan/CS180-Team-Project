@@ -13,7 +13,7 @@ public class Twitter {
                             "7 - Create a post\n" + "8 - Delete a post\n" + 
                             "9 - Edit a post\n" + "10 - Create a comment\n" + 
                             "11 - Delete a comment\n" + "12 - Edit a comment\n" + "13 - Upvote a post\n" + 
-                            "14 - Downvote a post\n" + "15 - Exit";
+                            "14 - Downvote a post\n" + "15 - Change password\n" + "16 - Exit";
 
     public Twitter(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) {
         readFile(usernameFile, userFiles, postFiles);
@@ -376,8 +376,18 @@ public class Twitter {
                     System.out.println("Post downvoted");
                 }
             }
-            if(option == 15) {
+            if (option == 15) {
+                System.out.println("Please enter your current password: ");
+                String oldPass = s.nextLine();
+                System.out.println("Please enter your desired password: ");
+                String newPass = s.nextLine();
+                String output = (user.setPassword(oldPass, newPass)) ? "Password changed" : "Could not change password";
+                System.out.println(output);
+
+            }
+            if(option == 16) {
                 writeFile();
+                s.close();
                 return;
             }
         }
