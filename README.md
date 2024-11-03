@@ -28,9 +28,24 @@ search through stored information and retrieve the wanted data, and to print out
 
 UserInterface: Interface implemented by User class to structure the methods used to create and manage users.
 
-(PUT POST STUFF HERE)
+Post class: Creates a post based on the input given, and prompts the user to enter missing information for the post. 
+There are getters and setters to obtain information from posts, such as upvotes/downvotes, and to edit a post. Posts
+have an arraylist to store, edit, and delete comments made. The information from this class is stored in the Post file
+and PostDatabase, implements PostInterface, and has its methods and exceptions checked by PostTest and PostTest1.
 
+PostDatabase: Contains an arraylist of all posts from the Post class, and allows users to add, edit, or delete existing 
+posts in the arraylist. The InvalidPostException is utilized if there is an invalid or nonexistent post that a user is
+trying to be accessed.
 
+PostTest class: Uses InvalidPostException and InvalidCommentException to validate the methods in Post class to create
+and delete posts and comments, along with incrementing/decrementing upvotes and downvotes.
+
+PostTest1 class: Verifies Post class methods to create posts, retrieve information with getters and set new data,
+edit/create/delete comments, increment/decrement votes, see if two comments are equal, and to print out a string with
+user and post information.
+
+PostInterface: Interface implemented by Post class to structure methods to create and edit Posts, along with other
+features from that class (such as editing comments).
 
 Comment class: Creates a comment based on whether there is text, an original post, and a valid user for the original
 post and the user commenting. This class relies on the Post and User classes to have valid information in order to
@@ -46,3 +61,9 @@ CommentTest1 class: Tests the thrown exceptions, whether the getter and setter m
 and whether two comments are equal in the Comment class.
 
 CommentInterface: Interface implemented by the Comment class to structure the methods used to create new comments.
+
+Twitter class: Allows the user to create a user and to interact with the different features of the app, such as adding
+friends, commenting on a post, and so on. The class implements TwitterInterface.
+
+TwitterInterface: Interface implemented by the Twitter class to structure the methods used to set up new users and 
+manage how users can interact with the app.
