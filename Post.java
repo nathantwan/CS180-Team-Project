@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
 
-public class Post {
+public class Post implements PostInterface {
     private String caption;
     private ImageIcon image;
     private int upvote;
