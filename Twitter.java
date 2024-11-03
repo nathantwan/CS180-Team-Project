@@ -23,9 +23,6 @@ public class Twitter {
 
     }
 
-   //User us = new User("yajushi", "gokhale", "ygokhale", "1234567", null);
-   //TESTING REMOVE
-
     public User createNewUser() {
         User u = new User();
         users.add(u);
@@ -176,13 +173,12 @@ public class Twitter {
         Scanner s = new Scanner(System.in);
 
         //login
-        // User user = null;
-        // if (s.nextLine().equals("Y")) {
-        //     user = createNewUser();
-        // } else {
-        //     user = login();
-        // }
-        User user = new User("yajushi", "gokhale", "ygokhale", "1234567", null);
+        User user = null;
+        if (s.nextLine().equals("Y")) {
+            user = createNewUser();
+        } else {
+            user = login();
+        }
 
         while (true) {
             System.out.println(MENU);
