@@ -25,3 +25,24 @@ the various features (such as adding friends) are adding or removing the correct
 UserTest class: Uses various tests to check if the User class is creating, storing, and manipulating data correctly.
 Specifically, if the getters and setters are getting the correct information, methods such as addFriend are able to 
 search through stored information and retrieve the wanted data, and to print out information correctly.
+
+UserInterface: Interface implemented by User class to structure the methods used to create and manage users.
+
+(PUT POST STUFF HERE)
+
+
+
+Comment class: Creates a comment based on whether there is text, an original post, and a valid user for the original
+post and the user commenting. This class relies on the Post and User classes to have valid information in order to
+create a comment from a specific post and user and implements CommentInterface. InvalidCommentException is used to throw
+ a new exception if the comment isn't a valid input. CommentTest and CommentTest1 test the validity of creating a
+ comment, along with the different methods used to get specific information from the Comment class and comparing if a 
+comment is equal or not.
+
+CommentTest class: Tests the exceptions with empty and null strings, editing a comment, and if a comment is
+equal or not in the Comment class.
+
+CommentTest1 class: Tests the thrown exceptions, whether the getter and setter methods are retrieving the correct data,
+and whether two comments are equal in the Comment class.
+
+CommentInterface: Interface implemented by the Comment class to structure the methods used to create new comments.
