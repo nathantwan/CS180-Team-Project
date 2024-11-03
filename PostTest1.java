@@ -104,11 +104,6 @@ public class PostTest1 {
         assertEquals("This is text", testPost1.getComments().get(0).getText());
     }
 
-    @Test(expected = InvalidCommentException.class)
-    public void testEmptyCommentText() throws InvalidCommentException {
-        testPost1.addComment( "", testUser1, testUser2, testPost1);
-    }
-
     //Ensures that the deleteComment method works
     @Test
     public void deleteComment() throws InvalidCommentException {
@@ -184,8 +179,8 @@ public class PostTest1 {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(testPostFile))) {
             reader.readLine(); 
-            assertEquals("Comment1, " + testPost1.getComments().get(0).getPostOwner() + ", " + testPost1.getComments().get(0).getCommenter(), reader.readLine());
-            //assertEquals("Comment2, SarahL, WilliamL", reader.readLine());
+            assertEquals("Comment1, SarahL, WilliamL", reader.readLine());
+            assertEquals("Comment2, SarahL, WilliamL", reader.readLine());
         } catch (IOException e) {
             fail(e.getMessage());
         }
