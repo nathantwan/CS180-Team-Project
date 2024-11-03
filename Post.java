@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
 
-public class Post implements PostInterface {
+public class Post {
     private String caption;
     private ImageIcon image;
     private int upvote;
@@ -44,7 +44,7 @@ public class Post implements PostInterface {
     public Post(User user) {
         Scanner scan = new Scanner(System.in);
         while (caption == null || caption.length() == 0) {
-            System.out.println("Enter your caption");
+            System.out.println("Enter your caption:");
             caption = scan.nextLine();
             if (caption == null || caption.length() == 0) {
                 System.out.println("Enter a valid caption");
@@ -161,7 +161,8 @@ public class Post implements PostInterface {
         String s = "------------\n";
         s += user.toString();
         s += "Caption: " + caption + "\n";
-        s += "Image: " + image.getDescription() + "\n";
+        String im = (image == null) ? "null" : image.getDescription();
+        s += "Image: " + im + "\n";
         s += "Comments: ";
         if (comments.size() == 0) {
             s += "None\n";
@@ -182,13 +183,14 @@ public class Post implements PostInterface {
         return postNumber;
     }
     public void writePost() {
-        File f = new File("Post" + postNumber + ".txt");
+        String fileName = "Post" + postNumber + ".txt";
+        File f = new File(fileName);
         try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
             String im = (image == null) ? "null" : image.getDescription();
             pw.write(caption + ", " +  im + ", " + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
             if(!(comments == null || comments.size() == 0)) {
                 for (Comment comment : comments) {
-                    pw.write(comment.getText() + ", " + comment.getPostOwner() + ", " + comment.getCommenter() + "\n");
+                    pw.write(comment.getText() + ", " + comment.getPostOwner().getUsername() + ", " + comment.getCommenter().getUsername() + "\n");
                 }
             }
 
