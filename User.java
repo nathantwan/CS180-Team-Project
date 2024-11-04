@@ -29,14 +29,16 @@ public class User implements UserInterface {
     }
 
     public User(Scanner s) {
-        //Scanner s = new Scanner(System.in);
         String input;
         System.out.println("Create a new user profile!");
 
         //Get first and last name
         System.out.println("Enter your first and last name: ");
         while (true) {
-            input = s.nextLine();
+            synchronized (obj) {
+                input = s.nextLine();
+            }
+            
             if (input == null || input.indexOf(" ") == -1) {
                 System.out.println("Error: Invalid Input! Please enter your first and last name.");
             } else {
@@ -50,7 +52,10 @@ public class User implements UserInterface {
         //Get username
         System.out.println("Enter your desired username: ");
         while (true) {
-            input = s.nextLine();
+            synchronized (obj) {
+                input = s.nextLine();
+            }
+            
             if (input == null || input.indexOf(" ") != -1) {
                 System.out.println("Error: Invalid Input! Please enter a valid username.");
             } else if (usernameArray.contains(input)) { //ensure username not taken
@@ -68,7 +73,9 @@ public class User implements UserInterface {
         //Get password
         System.out.println("Enter your password: ");
         while (true) {
-            input = s.nextLine();
+            synchronized (obj) {
+                input = s.nextLine();
+            }
             if (input == null || input.indexOf(" ") != -1) {
                 System.out.println("Error: Invalid Input! Please enter a valid password.");
             } else if (input.length() < 7 || input.length() > 12) { //ensure username not taken
@@ -82,7 +89,9 @@ public class User implements UserInterface {
 
         //upload picture
         System.out.println("Enter the path for your profile picture");
-        input = s.nextLine();
+        synchronized (obj) {
+            input = s.nextLine();
+        }
         profilePicture = new ImageIcon(input);
     }
 
