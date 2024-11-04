@@ -1,6 +1,15 @@
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
+/**
+ * User Interface
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Yajushi
+ * @version Nov 3, 2024
+ */
+
 public interface UserInterface {
     String getPassword();
     String getUsername();
