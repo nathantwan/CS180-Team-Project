@@ -32,7 +32,7 @@
    The first line contains information about the post while the following lines contain information about the comments.
 
    
-Phase 1 submitted to Vocareum Workspace by ___.
+Phase 1 submitted to Vocareum Workspace by Nathan Wan.
 
 InvalidPostException class: throw a new exception if a user tries to create a post that doesn't meet the criteria
 to create a post (having a caption and user).
