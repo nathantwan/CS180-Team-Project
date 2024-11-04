@@ -14,6 +14,7 @@ public class User implements UserInterface {
     private ImageIcon profilePicture;
 
     private static ArrayList<String> usernameArray = new ArrayList<String>();
+    private final Object obj = new Object();
 
     public User(String firstName, String lastName, String username, String password, ImageIcon profilePicture) {
         this.firstName = firstName;
@@ -21,7 +22,10 @@ public class User implements UserInterface {
         this.username = username;
         this.password = password;
         this.profilePicture = profilePicture;
-        usernameArray.add(username);
+        synchronized(obj) {
+            usernameArray.add(username);
+        }
+        
     }
 
     public User() {
@@ -53,7 +57,9 @@ public class User implements UserInterface {
                 System.out.println("This username is taken. Please enter another username.");
             } else {
                 username = input;
-                usernameArray.add(username);
+                synchronized(obj) {
+                    usernameArray.add(username);
+                }
                 break;
             }
         }
@@ -172,7 +178,8 @@ public class User implements UserInterface {
         String s = "------------\n";
         s += "Name: " + getName() + "\n";
         s += "Username: " + username + "\n";
-        s += "Profile Picture: " + profilePicture.getDescription() + "\n";
+        String im = (profilePicture == null) ? "null" : profilePicture.getDescription();
+        s += "Profile Picture: " + im + "\n";
         s += "Friends: ";
         if (friends.size() == 0) {
             s += "None\n";
@@ -217,12 +224,6 @@ public class User implements UserInterface {
             System.out.println("ERROR: File not created");
         }
 
-    }
-
-    public static void main(String[] args) {
-        User u = new User();
-        u.addFriend(u);
-        System.out.println(u);
     }
     
 }
