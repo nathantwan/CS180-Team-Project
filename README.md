@@ -2,7 +2,30 @@
 
 
 1. Instructions on how to compile and run your project.
+   In order to run the project, the Twitter class must be run. When trying to recreate the database from hardware, the
+   public Twitter(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) method.
+   usernameFile contains information about each user in the following format:
+        fullName, username, password, profilePicturePath
+   ArrayList<String> userFiles contains the name of all the files for the specific user info. The format is detailed below:
+        username
+        FRIENDS
+        username1
+        username2
+        ...
+        usernameN
+        BLOCKED
+        username1
+        username2
+        ...
+        usernameN
 
+   ArrayList<String> postFiles contains the name of all the files for each post. The format is detailed below:
+        caption, image, upvote, downvote, username, postnumber
+        text, postowner, commenter
+        text, postowner, commenter
+   The first line contains information about the post while the following lines contain information about the comments.
+
+   
 Phase 1 submitted to Vocareum Workspace by ___.
 
 InvalidPostException class: throw a new exception if a user tries to create a post that doesn't meet the criteria
