@@ -23,8 +23,8 @@ public class Twitter extends Thread implements TwitterInterface{
 
     }
 
-    public User createNewUser() {
-        User u = new User();
+    public User createNewUser(Scanner s) {
+        User u = new User(s);
         synchronized(obj) {
             users.add(u);
         }
@@ -44,9 +44,8 @@ public class Twitter extends Thread implements TwitterInterface{
         return u;
     }
 
-    public User login() {
+    public User login(Scanner s) {
         System.out.println("Please enter your username: ");
-        Scanner s = new Scanner(System.in);
         String input = s.nextLine();
 
         String username = "";
@@ -67,7 +66,7 @@ public class Twitter extends Thread implements TwitterInterface{
                 System.out.println("Would you like to create a new user? (Y/N): ");
 
                 if (s.nextLine().toLowerCase().charAt(0) == 'y') {
-                    return createNewUser();
+                    return createNewUser(s);
                 } else {
                     System.out.println("Please enter your username: ");
                     input = s.nextLine();
@@ -86,9 +85,6 @@ public class Twitter extends Thread implements TwitterInterface{
                 System.out.println("Incorrect Password. Try again: ");
             }
         }
-
-        
-        s.close();
 
         return u;
 
@@ -190,9 +186,9 @@ public class Twitter extends Thread implements TwitterInterface{
         //login
         User user = null;
         if (s.nextLine().equals("Y")) {
-            user = createNewUser();
+            user = createNewUser(s);
         } else {
-            user = login();
+            user = login(s);
         }
 
         while (true) {
@@ -267,7 +263,7 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
             if (option == 7) { //create new post
-                Post p = new Post(user);
+                Post p = new Post(user, s);
                 synchronized (obj) {
                     posts.add(p);
                 }
