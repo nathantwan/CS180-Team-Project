@@ -16,7 +16,7 @@ public class CommentTest1 {
     Post testPost;
     ImageIcon testImageIcon;
 
-    @Before
+    @Before //Sets variables that will be used in all following test cases
     public void setUp() throws Exception {
         testImageIcon = new ImageIcon("testImageIcon.png");
         postOwner = new User("Sarah", "Leitzel", "SarahL", "password123", testImageIcon);
@@ -28,12 +28,7 @@ public class CommentTest1 {
         testComment2 = new Comment("This is Comment 2", postOwner, commentOwner2, testPost);
     }
 
-    @Test
-    public void setComment() {
-        testComment1.setComment("This is a new comment");
-        assertEquals("This is a new comment", testComment1.getText());
-    }
-
+    //Tests that ensure the getter methods properly return data
     @Test
     public void getText() {
         assertEquals("This is Comment 1", testComment1.getText());
@@ -54,11 +49,30 @@ public class CommentTest1 {
         assertEquals(testPost, testComment1.getPost());
     }
 
+    //Test that ensures the setComment method properly changes or sets the comment text
+    @Test
+    public void setComment() {
+        assertEquals("This is Comment 1", testComment1.getText());
+
+        testComment1.setComment("This is a new comment");
+        assertEquals("This is a new comment", testComment1.getText());
+    }
+
+    //Test that ensures null or empty text throws an exception
+    @Test(expected = InvalidCommentException.class)
+    public void constructorShouldThrowExceptionForEmptyText() throws InvalidCommentException {
+        new Comment("", postOwner, commentOwner, testPost);
+    }
+
+    //Test that creates a new comment and compares it to testComment1 to ensure that the equal method works properly
     @Test
     public void testEquals() throws InvalidCommentException {
         Comment newComment = new Comment("This is Comment 1", postOwner, commentOwner, testPost);
 
-        assertTrue(testComment1.equals(newComment));
+        assertTrue(testComment1.getText().equals(newComment.getText()));
+        assertTrue(testComment1.getPostOwner().equals(newComment.getPostOwner()));
+        assertTrue(testComment1.getCommenter().equals(newComment.getCommenter()));
+        assertTrue(testComment1.getPost().equals(newComment.getPost()));
         assertFalse(testComment1.equals(testComment2));
     }
 }

@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
 
-public class Post implements PostInterface {
+public class Post {
     private String caption;
     private ImageIcon image;
     private int upvote;
@@ -12,6 +12,7 @@ public class Post implements PostInterface {
     private static int counter = 1;
     private int postNumber;
     private ArrayList<Comment> comments = new ArrayList<>();
+    public final Object obj = new Object();
 
     //write a constructor that intializes all fields
     public Post(String caption, ImageIcon image, User user) throws InvalidPostException {
@@ -23,8 +24,10 @@ public class Post implements PostInterface {
         this.user = user;
         this.upvote = 0;
         this.downvote = 0;
-        this.postNumber = counter;
-        counter++;
+        synchronized(obj) {
+            this.postNumber = counter;
+            counter++;
+        }
     }
 
     public Post(String caption, ImageIcon image, User user, int upvote, int downvote) throws InvalidPostException {
@@ -36,15 +39,17 @@ public class Post implements PostInterface {
         this.user = user;
         this.upvote = upvote;
         this.downvote = downvote;
-        this.postNumber = counter;
-        counter++;
+        synchronized(obj) {
+            this.postNumber = counter;
+            counter++;
+        }
     }
 
     // if only User parameter given, prompt user to onput fields
     public Post(User user) {
         Scanner scan = new Scanner(System.in);
         while (caption == null || caption.length() == 0) {
-            System.out.println("Enter your caption");
+            System.out.println("Enter your caption:");
             caption = scan.nextLine();
             if (caption == null || caption.length() == 0) {
                 System.out.println("Enter a valid caption");
@@ -161,7 +166,8 @@ public class Post implements PostInterface {
         String s = "------------\n";
         s += user.toString();
         s += "Caption: " + caption + "\n";
-        s += "Image: " + image.getDescription() + "\n";
+        String im = (image == null) ? "null" : image.getDescription();
+        s += "Image: " + im + "\n";
         s += "Comments: ";
         if (comments.size() == 0) {
             s += "None\n";
@@ -182,13 +188,14 @@ public class Post implements PostInterface {
         return postNumber;
     }
     public void writePost() {
-        File f = new File("Post" + postNumber + ".txt");
+        String fileName = "Post" + postNumber + ".txt";
+        File f = new File(fileName);
         try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
             String im = (image == null) ? "null" : image.getDescription();
             pw.write(caption + ", " +  im + ", " + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
             if(!(comments == null || comments.size() == 0)) {
                 for (Comment comment : comments) {
-                    pw.write(comment.getText() + ", " + comment.getPostOwner() + ", " + comment.getCommenter() + "\n");
+                    pw.write(comment.getText() + ", " + comment.getPostOwner().getUsername() + ", " + comment.getCommenter().getUsername() + "\n");
                 }
             }
 
