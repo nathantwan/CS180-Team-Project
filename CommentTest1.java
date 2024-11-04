@@ -5,6 +5,15 @@ import javax.swing.*;
 
 import static org.junit.Assert.*;
 
+/**
+ * Comment Test class
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Rafael Fletes
+ * @version Nov 3, 2024
+ */
+
 public class CommentTest1 {
 
     Comment testComment1;
