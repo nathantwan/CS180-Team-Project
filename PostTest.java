@@ -3,6 +3,15 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
+/**
+ * Post Class Test
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author UziMaes
+ * @version Nov 3, 2024
+ */
+
 public class PostTest {
 
     @Test
