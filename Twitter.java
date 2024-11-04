@@ -1,7 +1,14 @@
 import java.io.*;
 import java.util.*;
 import javax.swing.ImageIcon;
-
+/**
+ * Twitter class
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Yajushi
+ * @version Nov 3, 2024
+ */
 
 public class Twitter extends Thread implements TwitterInterface{
    private ArrayList<User> users = new ArrayList<User>();
