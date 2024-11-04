@@ -9,6 +9,15 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.nio.file.Files;
 
+/**
+ * Post Class Tests
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Rafael Fletes
+ * @version Nov 3, 2024
+ */
+
 public class PostTest1 {
 
     Post testPost1;
