@@ -46,8 +46,10 @@ public class Twitter extends Thread implements TwitterInterface{
 
     public User login(Scanner s) {
         System.out.println("Please enter your username: ");
-        String input = s.nextLine();
-
+        String input;
+        synchronized (obj) {
+            input = s.nextLine();
+        }
         String username = "";
         User u = null;  
         while (true) {
@@ -65,18 +67,22 @@ public class Twitter extends Thread implements TwitterInterface{
                 System.out.println("The username you entered has not been created.");
                 System.out.println("Would you like to create a new user? (Y/N): ");
 
-                if (s.nextLine().toLowerCase().charAt(0) == 'y') {
-                    return createNewUser(s);
-                } else {
-                    System.out.println("Please enter your username: ");
-                    input = s.nextLine();
+                synchronized (obj){
+                    if (s.nextLine().toLowerCase().charAt(0) == 'y') {
+                        return createNewUser(s);
+                    } else {
+                        System.out.println("Please enter your username: ");
+                        input = s.nextLine();
+                    }
                 }
             }
         }
 
 
         System.out.println("Please enter your password");
-        input = s.nextLine();
+        synchronized (obj) {
+            input = s.nextLine();
+        }
         while (true) {
             if (input.equals(u.getPassword())) {
                 System.out.println("You have logged in!");
@@ -193,11 +199,17 @@ public class Twitter extends Thread implements TwitterInterface{
 
         while (true) {
             System.out.println(MENU);
-            int option = s.nextInt();
-            s.nextLine();
+            int option;
+            synchronized(obj) {
+                option = s.nextInt();
+                s.nextLine();
+            }
             if (option == 1) { //add friend
                 System.out.println("Please enter the username of the friend you would like to add: ");
-                String username = s.nextLine();
+                String username;
+                synchronized (obj) {
+                    username = s.nextLine();
+                }
                 User friend = getUser(username);
                 if (friend == null) {
                     System.out.println("Error: Invalid username");
@@ -208,7 +220,10 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 2) { //remove friend
                 System.out.println("Please enter the username of the friend you would like to remove: ");
-                String username = s.nextLine();
+                String username;
+                synchronized (obj) {
+                    username = s.nextLine();
+                }
                 User friend = getUser(username);
                 if (friend == null) {
                     System.out.println("Error: Invalid username");
@@ -219,7 +234,10 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 3) { //block user
                 System.out.println("Please enter the username of the user you would like to block: ");
-                String username = s.nextLine();
+                String username;
+                synchronized (obj) {
+                    username = s.nextLine();
+                }
                 User blocked = getUser(username);
                 if (blocked == null) {
                     System.out.println("Error: Invalid username");
@@ -230,7 +248,10 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 4) { //unblock user
                 System.out.println("Please enter the username of the user you would like to unblock: ");
-                String username = s.nextLine();
+                String username;
+                synchronized (obj) {
+                    username = s.nextLine();
+                }
                 User blocked = getUser(username);
                 if (blocked == null) {
                     System.out.println("Error: Invalid username");
@@ -241,7 +262,10 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 5) { //user profile
                 System.out.println("Please enter the username of the user you would like to view: ");
-                String username = s.nextLine();
+                String username;
+                synchronized (obj) {
+                    username = s.nextLine();
+                }
                 User other = getUser(username);
                 if (other == null) {
                     System.out.println("Error: Invalid username");
@@ -270,8 +294,11 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 8) { //delete post
                 System.out.println("Please enter the number of the post you would like to delete (Note the first post is number 0):");
-                int postNum = s.nextInt();
-                s.nextLine();
+                int postNum;
+                synchronized (obj) {
+                    postNum = s.nextInt();
+                    s.nextLine();
+                }
                 synchronized (obj) {
                     if (postNum < 0 || postNum >= posts.size()) {
                         System.out.println("Error: Post could not be found");
@@ -288,8 +315,11 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 9) { //edit post
                 System.out.println("Please enter the number of the post you would like to edit (Note the first post is number 0):");
-                int postNum = s.nextInt();
-                s.nextLine();
+                int postNum;
+                synchronized (obj) {
+                    postNum = s.nextInt();
+                    s.nextLine();
+                }
                 synchronized (obj) {
                     if (postNum < 0 || postNum >= posts.size()) {
                         System.out.println("Error: Post could not be found");
@@ -313,8 +343,11 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 10) { //comment on post
                 System.out.println("Please enter the number of the post you would like to comment on (Note the first post is number 0):");
-                int postNum = s.nextInt();
-                s.nextLine();
+                int postNum;
+                synchronized (obj) {
+                    postNum = s.nextInt();
+                    s.nextLine();
+                }
                 synchronized (obj) {
                     if (postNum < 0 || postNum >= posts.size()) {
                         System.out.println("Error: Post could not be found");
@@ -333,8 +366,11 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 11) {//delete post comment
                 System.out.println("Please enter the number of the post you would like to delete the comment on (Note the first post is number 0):");
-                int postNum = s.nextInt();
-                s.nextLine();
+                int postNum;
+                synchronized (obj) {
+                    postNum = s.nextInt();
+                    s.nextLine();
+                }
                 synchronized (obj) {
                     if (postNum < 0 || postNum >= posts.size()) {
                         System.out.println("Error: Post could not be found");
@@ -358,8 +394,11 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 12) { //edit comment
                 System.out.println("Please enter the number of the post you would like to edit the comment on (Note the first post is number 0):");
-                int postNum = s.nextInt();
-                s.nextLine();
+                int postNum;
+                synchronized (obj) {
+                    postNum = s.nextInt();
+                    s.nextLine();
+                }
                 synchronized (obj) {
                     if (postNum < 0 || postNum >= posts.size()) {
                         System.out.println("Error: Post could not be found");
@@ -389,8 +428,11 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 13) { //upvote post
                 System.out.println("Please enter the number of the post you would like to upvote (Note the first post is number 0):");
-                int postNum = s.nextInt();
-                s.nextLine();
+                int postNum;
+                synchronized (obj) {
+                    postNum = s.nextInt();
+                    s.nextLine();
+                }
                 synchronized (obj) {
                     if (postNum < 0 || postNum >= posts.size()) {
                         System.out.println("Error: Post could not be found");
@@ -403,8 +445,11 @@ public class Twitter extends Thread implements TwitterInterface{
             }
             if (option == 14) { //downvote post
                 System.out.println("Please enter the number of the post you would like to downvote (Note the first post is number 0):");
-                int postNum = s.nextInt();
-                s.nextLine();
+                int postNum;
+                synchronized (obj) {
+                    postNum = s.nextInt();
+                    s.nextLine();
+                }
                 synchronized (obj) {
                     if (postNum < 0 || postNum >= posts.size()) {
                         System.out.println("Error: Post could not be found");
