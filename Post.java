@@ -3,6 +3,15 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
 
+/**
+ * Post class
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Nathan Wan
+ * @version Nov 3, 2024
+ */
+
 public class Post implements PostInterface{
     private String caption;
     private ImageIcon image;
