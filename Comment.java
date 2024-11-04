@@ -1,3 +1,12 @@
+/**
+ * Comment class
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Nathan Wan
+ * @version Nov 3, 2024
+ */
+
 public class Comment implements CommentInterface {
     private String text;
     private User postOwner;
