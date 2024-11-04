@@ -49,7 +49,9 @@ public class Post implements PostInterface{
     public Post(User user, Scanner scan) {
         while (caption == null || caption.length() == 0) {
             System.out.println("Enter your caption:");
-            caption = scan.nextLine();
+            synchronized(obj) {
+                caption = scan.nextLine();
+            }
             if (caption == null || caption.length() == 0) {
                 System.out.println("Enter a valid caption");
             }
