@@ -5,9 +5,10 @@
    In order to run the project, the Twitter class must be run. When trying to recreate the database from hardware, the
    public Twitter(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) method.
 
-       usernameFile contains information about each user in the following format:
+   usernameFile contains information about each user in the following format:
 
-   fullName, username, password, profilePicturePath
+      fullName, username, password, profilePicturePath
+   
    ArrayList<String> userFiles contains the name of all the files for the specific user info. The format is detailed below:
 
         username
