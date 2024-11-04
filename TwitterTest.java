@@ -6,6 +6,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Twitter Tests
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Rafael Fletes
+ * @version Nov 3, 2024
+ */
 public class TwitterTest {
 
     @Test
