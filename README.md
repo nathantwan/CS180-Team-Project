@@ -66,4 +66,4 @@ Twitter class: Allows the user to create a user and to interact with the differe
 friends, commenting on a post, and so on. The class implements TwitterInterface.
 
 TwitterInterface: Interface implemented by the Twitter class to structure the methods used to set up new users and 
-manage how users can interact with the app.
+manage how users can interact with the app. 
