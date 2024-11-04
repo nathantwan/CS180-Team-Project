@@ -98,19 +98,19 @@ public class Twitter extends Thread implements TwitterInterface{
         try {
             PrintWriter pw = new PrintWriter(new FileOutputStream(new File("users.txt"), false));
             synchronized (obj) {
-                for (User u : users) {
-                    u.writeFile();
+                for (User u : users) {// Write users
+                    u.writeFile(); //write specifc user info
                     String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture().getDescription();
                     String userInfo = u.getName() + ", " + u.getUsername() + ", " + u.getPassword() + ", " + picture;
                     pw.println(userInfo);
                 }
             }
-            pw.close();;
+            pw.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error: File not created");
         }
         synchronized (obj) {
-            for (Post p : posts) {
+            for (Post p : posts) { //write posts
                 p.writePost();
             }
         }
@@ -118,7 +118,7 @@ public class Twitter extends Thread implements TwitterInterface{
     public void readFile(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) {
         try {
             BufferedReader bfr = new BufferedReader(new FileReader(new File(usernameFile)));
-            while (true) {
+            while (true) { //read users
                 String userInfo = bfr.readLine();
                 if (userInfo == null) {
                     break;
@@ -132,7 +132,7 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
 
-            for (String file : userFiles) {
+            for (String file : userFiles) { //get specific user info
                 bfr = new BufferedReader(new FileReader(new File(file)));
                 String username = bfr.readLine();
                 User user = getUser(username);
@@ -156,7 +156,7 @@ public class Twitter extends Thread implements TwitterInterface{
                 user.setBlocked(blocked);
             }
 
-            for (String file : postFiles) {
+            for (String file : postFiles) { //get post info
                 bfr = new BufferedReader(new FileReader(new File(file)));
                 String postInfo = bfr.readLine();
                 String[] postArray = postInfo.split(", ");
@@ -166,7 +166,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     posts.add(p);
                 }
                 while (true) {
-                    String commentInfo = bfr.readLine();
+                    String commentInfo = bfr.readLine(); //get comment info
                     if (commentInfo == null) {
                         break;
                     }
@@ -199,7 +199,7 @@ public class Twitter extends Thread implements TwitterInterface{
             System.out.println(MENU);
             int option = s.nextInt();
             s.nextLine();
-            if (option == 1) {
+            if (option == 1) { //add friend
                 System.out.println("Please enter the username of the friend you would like to add: ");
                 String username = s.nextLine();
                 User friend = getUser(username);
@@ -210,7 +210,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     System.out.println("Friend added!");
                 }
             }
-            if (option == 2) {
+            if (option == 2) { //remove friend
                 System.out.println("Please enter the username of the friend you would like to remove: ");
                 String username = s.nextLine();
                 User friend = getUser(username);
@@ -221,7 +221,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     System.out.println("Friend removed.");
                 }
             }
-            if (option == 3) {
+            if (option == 3) { //block user
                 System.out.println("Please enter the username of the user you would like to block: ");
                 String username = s.nextLine();
                 User blocked = getUser(username);
@@ -232,7 +232,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     System.out.println("User blocked.");
                 }
             }
-            if (option == 4) {
+            if (option == 4) { //unblock user
                 System.out.println("Please enter the username of the user you would like to unblock: ");
                 String username = s.nextLine();
                 User blocked = getUser(username);
@@ -243,7 +243,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     System.out.println("User unblocked.");
                 }
             }
-            if (option == 5) {
+            if (option == 5) { //user profile
                 System.out.println("Please enter the username of the user you would like to view: ");
                 String username = s.nextLine();
                 User other = getUser(username);
@@ -253,7 +253,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     System.out.println(other);
                 }
             }
-            if (option == 6) {
+            if (option == 6) { //display feed
                 ArrayList<Post> feed;
                 synchronized (obj) {
                     feed = user.displayFeed(posts);
@@ -266,13 +266,13 @@ public class Twitter extends Thread implements TwitterInterface{
                     System.out.println(p);
                 }
             }
-            if (option == 7) {
+            if (option == 7) { //create new post
                 Post p = new Post(user);
                 synchronized (obj) {
                     posts.add(p);
                 }
             }
-            if (option == 8) {
+            if (option == 8) { //delete post
                 System.out.println("Please enter the number of the post you would like to delete (Note the first post is number 0):");
                 int postNum = s.nextInt();
                 s.nextLine();
@@ -290,7 +290,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     }
                 }
             }
-            if (option == 9) {
+            if (option == 9) { //edit post
                 System.out.println("Please enter the number of the post you would like to edit (Note the first post is number 0):");
                 int postNum = s.nextInt();
                 s.nextLine();
@@ -315,7 +315,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     }
                 }
             }
-            if (option == 10) {
+            if (option == 10) { //comment on post
                 System.out.println("Please enter the number of the post you would like to comment on (Note the first post is number 0):");
                 int postNum = s.nextInt();
                 s.nextLine();
@@ -335,7 +335,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     }
                 }
             }
-            if (option == 11) {
+            if (option == 11) {//delete post comment
                 System.out.println("Please enter the number of the post you would like to delete the comment on (Note the first post is number 0):");
                 int postNum = s.nextInt();
                 s.nextLine();
@@ -360,7 +360,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     }
                 }
             }
-            if (option == 12) {
+            if (option == 12) { //edit comment
                 System.out.println("Please enter the number of the post you would like to edit the comment on (Note the first post is number 0):");
                 int postNum = s.nextInt();
                 s.nextLine();
@@ -391,7 +391,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     }
                 }
             }
-            if (option == 13) {
+            if (option == 13) { //upvote post
                 System.out.println("Please enter the number of the post you would like to upvote (Note the first post is number 0):");
                 int postNum = s.nextInt();
                 s.nextLine();
@@ -405,7 +405,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     }
                 }
             }
-            if (option == 14) {
+            if (option == 14) { //downvote post
                 System.out.println("Please enter the number of the post you would like to downvote (Note the first post is number 0):");
                 int postNum = s.nextInt();
                 s.nextLine();
@@ -419,7 +419,7 @@ public class Twitter extends Thread implements TwitterInterface{
                     }
                 }
             }
-            if (option == 15) {
+            if (option == 15) { //change password
                 System.out.println("Please enter your current password: ");
                 String oldPass = s.nextLine();
                 System.out.println("Please enter your desired password: ");
@@ -428,7 +428,7 @@ public class Twitter extends Thread implements TwitterInterface{
                 System.out.println(output);
 
             }
-            if(option == 16) {
+            if(option == 16) { //end run and save to file
                 writeFile();
                 s.close();
                 return;
