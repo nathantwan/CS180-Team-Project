@@ -1,10 +1,9 @@
 import java.io.*;
 import java.util.*;
-
 import javax.swing.ImageIcon;
 
 
-public class Twitter implements TwitterInterface{
+public class Twitter extends Thread implements TwitterInterface{
    private ArrayList<User> users = new ArrayList<User>();
    private ArrayList<Post> posts = new ArrayList<Post>();
    private final String MENU = "1 - Add a friend\n" + "2 - Remove a friend\n"
@@ -14,6 +13,7 @@ public class Twitter implements TwitterInterface{
                             "9 - Edit a post\n" + "10 - Create a comment\n" + 
                             "11 - Delete a comment\n" + "12 - Edit a comment\n" + "13 - Upvote a post\n" + 
                             "14 - Downvote a post\n" + "15 - Change password\n" + "16 - Exit";
+    private final Object obj = new Object();
 
     public Twitter(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) {
         readFile(usernameFile, userFiles, postFiles);
@@ -25,16 +25,20 @@ public class Twitter implements TwitterInterface{
 
     public User createNewUser() {
         User u = new User();
-        users.add(u);
+        synchronized(obj) {
+            users.add(u);
+        }
         return u;
     }
 
     public User getUser(String username) {
         User u = null;
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                u = user;
-                break;
+        synchronized (obj) {
+            for (User user : users) {
+                if (user.getUsername().equals(username)) {
+                    u = user;
+                    break;
+                }
             }
         }
         return u;
@@ -48,10 +52,12 @@ public class Twitter implements TwitterInterface{
         String username = "";
         User u = null;  
         while (true) {
-            for (User user : users) {
-                if (user.getUsername().equals(input)) {
-                    username = input;
-                    u = user;
+            synchronized (obj) {
+                for (User user : users) {
+                    if (user.getUsername().equals(input)) {
+                        username = input;
+                        u = user;
+                    }
                 }
             }
             if (username.length() > 0) {
@@ -91,18 +97,22 @@ public class Twitter implements TwitterInterface{
     public void writeFile() {
         try {
             PrintWriter pw = new PrintWriter(new FileOutputStream(new File("users.txt"), false));
-            for (User u : users) {
-                u.writeFile();
-                String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture().getDescription();
-                String userInfo = u.getName() + ", " + u.getUsername() + ", " + u.getPassword() + ", " + picture;
-                pw.println(userInfo);
+            synchronized (obj) {
+                for (User u : users) {
+                    u.writeFile();
+                    String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture().getDescription();
+                    String userInfo = u.getName() + ", " + u.getUsername() + ", " + u.getPassword() + ", " + picture;
+                    pw.println(userInfo);
+                }
             }
             pw.close();;
         } catch (FileNotFoundException e) {
             System.out.println("Error: File not created");
         }
-        for (Post p : posts) {
-            p.writePost();
+        synchronized (obj) {
+            for (Post p : posts) {
+                p.writePost();
+            }
         }
     }
     public void readFile(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) {
@@ -117,7 +127,9 @@ public class Twitter implements TwitterInterface{
                 String firstname = uArray[0].substring(0, uArray[0].indexOf(" "));
                 String lastname = uArray[0].substring(uArray[0].indexOf(" ") + 1);
                 ImageIcon image = (uArray[3].equals("null")) ? null : new ImageIcon(uArray[3]);
-                users.add(new User(firstname, lastname, uArray[1], uArray[2], image));
+                synchronized (obj) {
+                    users.add(new User(firstname, lastname, uArray[1], uArray[2], image));
+                }
             }
 
             for (String file : userFiles) {
@@ -150,6 +162,9 @@ public class Twitter implements TwitterInterface{
                 String[] postArray = postInfo.split(", ");
                 ImageIcon im = (postArray[1].equals("null")) ? null : new ImageIcon(postArray[1]);
                 Post p = new Post(postArray[0], im, getUser(postArray[4]), Integer.parseInt(postArray[2]), Integer.parseInt(postArray[3]));
+                synchronized (obj) {
+                    posts.add(p);
+                }
                 while (true) {
                     String commentInfo = bfr.readLine();
                     if (commentInfo == null) {
@@ -182,7 +197,8 @@ public class Twitter implements TwitterInterface{
 
         while (true) {
             System.out.println(MENU);
-            int option = s.nextInt(); s.nextLine();
+            int option = s.nextInt();
+            s.nextLine();
             if (option == 1) {
                 System.out.println("Please enter the username of the friend you would like to add: ");
                 String username = s.nextLine();
@@ -238,7 +254,11 @@ public class Twitter implements TwitterInterface{
                 }
             }
             if (option == 6) {
-                ArrayList<Post> feed = user.displayFeed(posts);
+                ArrayList<Post> feed;
+                synchronized (obj) {
+                    feed = user.displayFeed(posts);
+                }
+                
                 if (feed.size() == 0) {
                     System.out.println("There are no posts in your feed.");
                 }
@@ -248,107 +268,124 @@ public class Twitter implements TwitterInterface{
             }
             if (option == 7) {
                 Post p = new Post(user);
-                posts.add(p);
+                synchronized (obj) {
+                    posts.add(p);
+                }
             }
             if (option == 8) {
                 System.out.println("Please enter the number of the post you would like to delete (Note the first post is number 0):");
-                int postNum = s.nextInt(); s.nextLine();
-                if (postNum < 0 || postNum >= posts.size()) {
-                    System.out.println("Error: Post could not be found");
-                } else {
-                    Post p = posts.get(postNum);
-                    if (p.getUser().equals(user) == false) {
-                        System.out.println("Error: You do not have the permissions to delete this post");
+                int postNum = s.nextInt();
+                s.nextLine();
+                synchronized (obj) {
+                    if (postNum < 0 || postNum >= posts.size()) {
+                        System.out.println("Error: Post could not be found");
                     } else {
-                        posts.remove(p);
-                        System.out.println("Post deleted");
+                        Post p = posts.get(postNum);
+                        if (p.getUser().equals(user) == false) {
+                            System.out.println("Error: You do not have the permissions to delete this post");
+                        } else {
+                            posts.remove(p);
+                            System.out.println("Post deleted");
+                        }
                     }
                 }
             }
             if (option == 9) {
                 System.out.println("Please enter the number of the post you would like to edit (Note the first post is number 0):");
-                int postNum = s.nextInt(); s.nextLine();
-                if (postNum < 0 || postNum >= posts.size()) {
-                    System.out.println("Error: Post could not be found");
-                } else {
-                    Post p = posts.get(postNum);
-                    if (p.getUser().equals(user) == false) {
-                        System.out.println("Error: You do not have the permissions to edit this post");
+                int postNum = s.nextInt();
+                s.nextLine();
+                synchronized (obj) {
+                    if (postNum < 0 || postNum >= posts.size()) {
+                        System.out.println("Error: Post could not be found");
                     } else {
-                        System.out.println("Enter the new caption");
-                        String caption = s.nextLine();
-                        if (caption == null || caption.length() == 0) {
-                            System.out.println("Error: Invalid caption");
+                        Post p = posts.get(postNum);
+                        if (p.getUser().equals(user) == false) {
+                            System.out.println("Error: You do not have the permissions to edit this post");
                         } else {
-                            p.editPost(caption);
-                            System.out.println("Post edited");
+                            System.out.println("Enter the new caption");
+                            String caption = s.nextLine();
+                            if (caption == null || caption.length() == 0) {
+                                System.out.println("Error: Invalid caption");
+                            } else {
+                                p.editPost(caption);
+                                System.out.println("Post edited");
+                            }
+                            
                         }
-                        
                     }
                 }
             }
             if (option == 10) {
                 System.out.println("Please enter the number of the post you would like to comment on (Note the first post is number 0):");
-                int postNum = s.nextInt(); s.nextLine();
-                if (postNum < 0 || postNum >= posts.size()) {
-                    System.out.println("Error: Post could not be found");
-                } else {
-                    Post p = posts.get(postNum);
-                    System.out.println("Enter the comment");
-                        String caption = s.nextLine();
-                        if (caption == null || caption.length() == 0) {
-                            System.out.println("Error: Invalid comment");
-                        } else {
-                            p.addComment(caption, p.getUser(), user, p);
-                            System.out.println("Comment created");
-                        }
+                int postNum = s.nextInt();
+                s.nextLine();
+                synchronized (obj) {
+                    if (postNum < 0 || postNum >= posts.size()) {
+                        System.out.println("Error: Post could not be found");
+                    } else {
+                        Post p = posts.get(postNum);
+                        System.out.println("Enter the comment");
+                            String caption = s.nextLine();
+                            if (caption == null || caption.length() == 0) {
+                                System.out.println("Error: Invalid comment");
+                            } else {
+                                p.addComment(caption, p.getUser(), user, p);
+                                System.out.println("Comment created");
+                            }
+                    }
                 }
             }
             if (option == 11) {
                 System.out.println("Please enter the number of the post you would like to delete the comment on (Note the first post is number 0):");
-                int postNum = s.nextInt(); s.nextLine();
-                if (postNum < 0 || postNum >= posts.size()) {
-                    System.out.println("Error: Post could not be found");
-                } else {
-                    Post p = posts.get(postNum);
-                    System.out.println("Please enter the number of the comment you would like to delete (Note the first comment in number 0):");
-                    int commentNum = s.nextInt(); s.nextLine();
-                    if (commentNum < 0 || commentNum >= p.getComments().size()) {
-                        System.out.println("Error: Comment could not be found");
+                int postNum = s.nextInt();
+                s.nextLine();
+                synchronized (obj) {
+                    if (postNum < 0 || postNum >= posts.size()) {
+                        System.out.println("Error: Post could not be found");
                     } else {
-                        Comment comment = p.getComments().get(commentNum);
-                        if (comment.getCommenter().equals(user) == false && comment.getPostOwner().equals(user) == false) {
-                            System.out.println("Error: You do not have the permissions to delete this comment");
+                        Post p = posts.get(postNum);
+                        System.out.println("Please enter the number of the comment you would like to delete (Note the first comment in number 0):");
+                        int commentNum = s.nextInt(); s.nextLine();
+                        if (commentNum < 0 || commentNum >= p.getComments().size()) {
+                            System.out.println("Error: Comment could not be found");
                         } else {
-                            p.getComments().remove(comment);
-                            System.out.println("Comment deleted");
+                            Comment comment = p.getComments().get(commentNum);
+                            if (comment.getCommenter().equals(user) == false && comment.getPostOwner().equals(user) == false) {
+                                System.out.println("Error: You do not have the permissions to delete this comment");
+                            } else {
+                                p.getComments().remove(comment);
+                                System.out.println("Comment deleted");
+                            }
                         }
                     }
                 }
             }
             if (option == 12) {
                 System.out.println("Please enter the number of the post you would like to edit the comment on (Note the first post is number 0):");
-                int postNum = s.nextInt(); s.nextLine();
-                if (postNum < 0 || postNum >= posts.size()) {
-                    System.out.println("Error: Post could not be found");
-                } else {
-                    Post p = posts.get(postNum);
-                    System.out.println("Please enter the number of the comment you would like to edit (Note the first comment in number 0):");
-                    int commentNum = s.nextInt(); s.nextLine();
-                    if (commentNum < 0 || commentNum >= p.getComments().size()) {
-                        System.out.println("Error: Comment could not be found");
+                int postNum = s.nextInt();
+                s.nextLine();
+                synchronized (obj) {
+                    if (postNum < 0 || postNum >= posts.size()) {
+                        System.out.println("Error: Post could not be found");
                     } else {
-                        Comment comment = p.getComments().get(commentNum);
-                        if (comment.getCommenter().equals(user) == false) {
-                            System.out.println("Error: You do not have the permissions to edit this comment");
+                        Post p = posts.get(postNum);
+                        System.out.println("Please enter the number of the comment you would like to edit (Note the first comment in number 0):");
+                        int commentNum = s.nextInt(); s.nextLine();
+                        if (commentNum < 0 || commentNum >= p.getComments().size()) {
+                            System.out.println("Error: Comment could not be found");
                         } else {
-                            System.out.println("Enter the new comment");
-                            String newComment = s.nextLine();
-                            if (newComment == null || newComment.length() == 0) {
-                                System.out.println("Error: Invalid comment");
+                            Comment comment = p.getComments().get(commentNum);
+                            if (comment.getCommenter().equals(user) == false) {
+                                System.out.println("Error: You do not have the permissions to edit this comment");
                             } else {
-                                comment.setComment(newComment);
-                                System.out.println("Comment edited");
+                                System.out.println("Enter the new comment");
+                                String newComment = s.nextLine();
+                                if (newComment == null || newComment.length() == 0) {
+                                    System.out.println("Error: Invalid comment");
+                                } else {
+                                    comment.setComment(newComment);
+                                    System.out.println("Comment edited");
+                                }
                             }
                         }
                     }
@@ -356,24 +393,30 @@ public class Twitter implements TwitterInterface{
             }
             if (option == 13) {
                 System.out.println("Please enter the number of the post you would like to upvote (Note the first post is number 0):");
-                int postNum = s.nextInt(); s.nextLine();
-                if (postNum < 0 || postNum >= posts.size()) {
-                    System.out.println("Error: Post could not be found");
-                } else {
-                    Post p = posts.get(postNum);
-                    p.incrementUpvote();
-                    System.out.println("Post upvoted");
+                int postNum = s.nextInt();
+                s.nextLine();
+                synchronized (obj) {
+                    if (postNum < 0 || postNum >= posts.size()) {
+                        System.out.println("Error: Post could not be found");
+                    } else {
+                        Post p = posts.get(postNum);
+                        p.incrementUpvote();
+                        System.out.println("Post upvoted");
+                    }
                 }
             }
             if (option == 14) {
                 System.out.println("Please enter the number of the post you would like to downvote (Note the first post is number 0):");
-                int postNum = s.nextInt(); s.nextLine();
-                if (postNum < 0 || postNum >= posts.size()) {
-                    System.out.println("Error: Post could not be found");
-                } else {
-                    Post p = posts.get(postNum);
-                    p.incrementDownvote();
-                    System.out.println("Post downvoted");
+                int postNum = s.nextInt();
+                s.nextLine();
+                synchronized (obj) {
+                    if (postNum < 0 || postNum >= posts.size()) {
+                        System.out.println("Error: Post could not be found");
+                    } else {
+                        Post p = posts.get(postNum);
+                        p.incrementDownvote();
+                        System.out.println("Post downvoted");
+                    }
                 }
             }
             if (option == 15) {
