@@ -2,6 +2,14 @@ import java.io.*;
 import java.util.*;
 import javax.swing.ImageIcon;
 
+/**
+ * User class
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Yajushi 
+ * @version Nov 3, 2024
+ */
 public class User implements UserInterface {
     private ArrayList<User> friends = new ArrayList<User>();
     private ArrayList<User> blocked = new ArrayList<User>();
