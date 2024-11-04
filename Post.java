@@ -12,6 +12,7 @@ public class Post {
     private static int counter = 1;
     private int postNumber;
     private ArrayList<Comment> comments = new ArrayList<>();
+    public final Object obj = new Object();
 
     //write a constructor that intializes all fields
     public Post(String caption, ImageIcon image, User user) throws InvalidPostException {
@@ -23,8 +24,10 @@ public class Post {
         this.user = user;
         this.upvote = 0;
         this.downvote = 0;
-        this.postNumber = counter;
-        counter++;
+        synchronized(obj) {
+            this.postNumber = counter;
+            counter++;
+        }
     }
 
     public Post(String caption, ImageIcon image, User user, int upvote, int downvote) throws InvalidPostException {
@@ -36,8 +39,10 @@ public class Post {
         this.user = user;
         this.upvote = upvote;
         this.downvote = downvote;
-        this.postNumber = counter;
-        counter++;
+        synchronized(obj) {
+            this.postNumber = counter;
+            counter++;
+        }
     }
 
     // if only User parameter given, prompt user to onput fields
