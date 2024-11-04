@@ -28,8 +28,8 @@ public class User implements UserInterface {
         
     }
 
-    public User() {
-        Scanner s = new Scanner(System.in);
+    public User(Scanner s) {
+        //Scanner s = new Scanner(System.in);
         String input;
         System.out.println("Create a new user profile!");
 
@@ -84,8 +84,6 @@ public class User implements UserInterface {
         System.out.println("Enter the path for your profile picture");
         input = s.nextLine();
         profilePicture = new ImageIcon(input);
-
-        s.close();
     }
 
     public String getPassword() { //can be used for password protection login
