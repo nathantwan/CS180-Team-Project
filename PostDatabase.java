@@ -1,5 +1,14 @@
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+
+/**
+ * Post class
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Nathan Wan
+ * @version Nov 3, 2024
+ */
 public class PostDatabase {
     private static ArrayList<Post> feed = new ArrayList<>();
     public PostDatabase () {
