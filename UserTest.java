@@ -11,6 +11,15 @@ import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
+/**
+ * User Tests
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Rafael Fletes
+ * @version Nov 3, 2024
+ */
+
 public class UserTest {
 
     User testUser1;
