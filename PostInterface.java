@@ -1,6 +1,15 @@
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
+/**
+ * Post Interface
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Yajushi
+ * @version Nov 3, 2024
+ */
+
 public interface PostInterface {
     String getCaption();
     ImageIcon getImage();
