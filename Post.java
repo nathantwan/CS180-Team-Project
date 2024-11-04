@@ -29,7 +29,7 @@ public class Post implements PostInterface{
             counter++;
         }
     }
-    // constructor for new post
+
     public Post(String caption, ImageIcon image, User user, int upvote, int downvote) throws InvalidPostException {
         if (caption == null || caption.isEmpty() || user == null) {
             throw new InvalidPostException("Invalid Post");
@@ -46,8 +46,7 @@ public class Post implements PostInterface{
     }
 
     // if only User parameter given, prompt user to onput fields
-    public Post(User user) {
-        Scanner scan = new Scanner(System.in);
+    public Post(User user, Scanner scan) {
         while (caption == null || caption.length() == 0) {
             System.out.println("Enter your caption:");
             caption = scan.nextLine();
@@ -58,7 +57,6 @@ public class Post implements PostInterface{
         upvote = 0;
         downvote = 0;
         this.user = user;
-        scan.close();
 
     }
 
@@ -103,8 +101,7 @@ public class Post implements PostInterface{
     public ArrayList<Comment> getComments() {
         return comments;
     }
-
-    //add comment to the specific post
+    
     public void addComment(String text, User postOwner, User commenter, Post post) {
         try {
             Comment comment = new Comment(text, postOwner, commenter, post);
@@ -114,7 +111,6 @@ public class Post implements PostInterface{
         }
     }
 
-    // iterate through comment arraylist to find specific comment and ensure permissions
     public void deleteComment(Comment comment, User user) {
         if (!(comment.getPostOwner().equals(user)) && !(comment.getCommenter().equals(user))) {
             System.out.println("You do not have permission");
@@ -133,7 +129,7 @@ public class Post implements PostInterface{
             System.out.println("Comment does not exist");
         }
     }
-    // iterate thorugh comments to find specific comment to edit
+
     public void editComment(String text, Comment comment, User user) throws InvalidCommentException {
         int index = -1;
         if (!(comment.getCommenter().equals(user))) {
@@ -154,7 +150,7 @@ public class Post implements PostInterface{
 
 
     }
-    // checks equality of two posts
+
     public boolean equals(Object o) {
         if (!(this == o)) {
             return false;
@@ -164,7 +160,6 @@ public class Post implements PostInterface{
                 compare.getImage().equals(image) && compare.getUser().equals(user);
     }
 
-    // override toString method
     public String toString() { 
         String s = "------------\n";
         s += user.toString();
@@ -190,7 +185,6 @@ public class Post implements PostInterface{
     public int getPostNumber() {
         return postNumber;
     }
-    //writes post to file
     public void writePost() {
         String fileName = "Post" + postNumber + ".txt";
         File f = new File(fileName);
