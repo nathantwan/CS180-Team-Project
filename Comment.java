@@ -12,6 +12,7 @@ public class Comment implements CommentInterface {
         this.commenter = commenter;
         this.post = post;
     }
+    //getters and setters
     public void setComment(String text) {
         this.text = text;
     }
@@ -27,6 +28,7 @@ public class Comment implements CommentInterface {
     public Post getPost() {
         return post;
     }
+    //check if two comments are equal
     public boolean equals(Object o) {
         if (!(this == o)) {
             return false;
