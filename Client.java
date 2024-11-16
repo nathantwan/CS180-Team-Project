@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 /**
  * SearchClient class
  * <p>
@@ -20,12 +21,13 @@ public class Client {
             "14 - Downvote a post", "15 - Change password", "16 - Exit"};
 
     public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
         String hostName = "localhost";
         int portNumber = 4242;
         String option;
         String username;
         String password;
-        showWelcomeMessageDialog();
+        //showWelcomeMessageDialog();
         // Port is 4242
         Socket socket = null;
         BufferedReader reader = null;
@@ -34,44 +36,68 @@ public class Client {
             socket = new Socket(hostName, portNumber);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream());
-            showConnectionEstablishedDialog();
-            option = loginOrSignUp();
+            System.out.println("Connection Established");
+            //showConnectionEstablishedDialog();
+            System.out.println("Would you like to 1: Login or 2: Sign Up?");
+            //option = loginOrSignUp();
+            option = s.nextLine();
             boolean loop = true;
             if (option.equals("Login")) {
                 while (loop) {
-                    username = showUsernameTextInputDialog();
+                    System.out.println("Enter your username");
+                    username = s.nextLine();
+                    //username = showUsernameTextInputDialog();
                     //send username to server to check if valid
                     writer.write(username);
                     writer.println();
                     writer.flush();
                     // server sends "VALID" if username is found in database
-                    String response = reader.readLine();
-                    if (response.equals("VALID")) {
-                        password = showPasswordTextInputDialog();
+                    boolean response = Boolean.parseBoolean(reader.readLine());
+                    if (response) {
+                        System.out.println("Enter your password");
+                        password = s.nextLine();
+                        //password = showPasswordTextInputDialog();
                         // sends password
                         writer.write(password);
-                        String passwordResponse = reader.readLine();
-                        if (passwordResponse.equals("VALID")) {
-                            JOptionPane.showMessageDialog(null, "Login Success",
-                                    "Twitter", JOptionPane.INFORMATION_MESSAGE);
+                        boolean passwordResponse = Boolean.parseBoolean(reader.readLine());
+                        if (passwordResponse) {
+                            System.out.println("Login Success");
+                            //JOptionPane.showMessageDialog(null, "Login Success", "Twitter", JOptionPane.INFORMATION_MESSAGE);
                             loop = false;
                         } else {
-                            JOptionPane.showMessageDialog(null, "Password is incorrect",
-                                    "Twitter", JOptionPane.INFORMATION_MESSAGE);
+                            //JOptionPane.showMessageDialog(null, "Password is incorrect", "Twitter", JOptionPane.INFORMATION_MESSAGE);
+                            System.out.println("Password is incorrect");
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Username doesn't exist",
-                                "Twitter", JOptionPane.INFORMATION_MESSAGE);
+                        //JOptionPane.showMessageDialog(null, "Username doesn't exist", "Twitter", JOptionPane.INFORMATION_MESSAGE);
+                        System.out.println("Username does not exist");
 
                     }
                 }
-            } else if (option.equals("Sign Up")) {
-                username = showUsernameTextInputDialog();
-                writer.write(username);
-                password = showPasswordTextInputDialog();
-                writer.write(password);
-                JOptionPane.showMessageDialog(null, "New Account Created",
-                        "Twitter", JOptionPane.INFORMATION_MESSAGE);
+            } else if (option.equals("Sign Up") {
+                while (true) {
+                    System.out.println("Enter a username");
+                    username = s.nextLine();
+                    //username = showUsernameTextInputDialog();
+                    writer.write(username);
+                    writer.println();
+                    writer.flush();
+                    System.out.println("Enter a password");
+                    password = s.nextLine();
+                    //password = showPasswordTextInputDialog();
+                    writer.write(password);
+                    writer.println();
+                    writer.flush();
+                    boolean passwordValid = Boolean.parseBoolean(reader.readLine());
+                    if (passwordValid) {
+                        System.out.println("New Account Created");
+                        break;
+                    } else {
+                        System.out.println("Invalid password. Try Again!");
+                    }
+                    //JOptionPane.showMessageDialog(null, "New Account Created", "Twitter", JOptionPane.INFORMATION_MESSAGE);
+                }
+
             }
             boolean runLoop = true;
             while (runLoop) {
@@ -82,19 +108,57 @@ public class Client {
                         writer.println();
                         writer.flush();
                         String friendUsername = addOrRemoveFriend(0);
+                        writer.write(friendUsername);
+                        writer.println();
+                        writer.flush();
+
                         break;
                     case 2:
                         writer.write("Option 2");
                         writer.println();
                         writer.flush();
                         String removeUsername = addOrRemoveFriend(1);
+                        writer.write(removeUsername);
+                        writer.println();
+                        writer.flush();
                         break;
                     case 3:
                         writer.write("Option 3");
                         writer.println();
                         writer.flush();
-                        
-                        
+                        String blockUsername = blockOrRemoveUser(0);
+                        writer.write(blockUsername);
+                        writer.println();
+                        writer.flush();
+                        break;
+                    case 4:
+                        writer.write("Option 4");
+                        writer.println();
+                        writer.flush();
+                        String unblockUsername = blockOrRemoveUser(1);
+                        writer.write(unblockUsername);
+                        writer.println();
+                        writer.flush();
+                    case 5:
+                        writer.write("Option 5");
+                        writer.println();
+                        writer.flush();
+                        String viewUser = viewProfile();
+                        writer.write(viewUser);
+                        writer.println();
+                        writer.flush();
+                        break;
+                    case 6:
+                        writer.write("Option 6");
+                        writer.println();
+                        writer.flush();
+                        break;
+                    case 7:
+
+
+
+
+
                 }
             }
 
@@ -200,6 +264,36 @@ public class Client {
         } while (text.isEmpty());
         return text;
     }
-    
+    public static String blockOrRemoveUser(int choice) {
+        String text = "";
+        do {
+            if (choice == 0) {
+                text = JOptionPane.showInputDialog(null, "Enter the username of the user you would like to block",
+                        "Twitter", JOptionPane.QUESTION_MESSAGE);
+            } else if (choice == 1) {
+                text = JOptionPane.showInputDialog(null, "Enter the username of the user you would like to unblock",
+                        "Twitter", JOptionPane.QUESTION_MESSAGE);
+            }
+            if (text.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "User cannot be empty!", "Twitter",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } while (text.isEmpty());
+        return text;
+    }
+    public static String viewProfile() {
+        String text = "";
+        do {
+            text = JOptionPane.showInputDialog(null, "Enter the username of the profile you would like to view",
+                        "Twitter", JOptionPane.QUESTION_MESSAGE);
+            if (text.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "User cannot be empty!", "Twitter",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } while (text.isEmpty());
+        return text;
+    }
+
+
 
 }
