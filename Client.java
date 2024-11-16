@@ -3,16 +3,21 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 /**
- * Client class
+ * SearchClient class
  * <p>
- * Purdue University -- CS18000 
+ * Purdue University -- CS18000 -- homework 11
  *
  * @author Nathan Wan
  * @version Nov 3, 2024
  */
 
 public class Client {
-    private static String[] searchOptions;
+    private static final String[] MENU = new String[]{"1 - Add a friend", "2 - Remove a friend", "3 - Block a user" + "4 - Unblock a user"
+            ,"5 - View a user profile", "6 - View feed",
+            "7 - Create a post", "8 - Delete a post",
+            "9 - Edit a post", "10 - Create a comment",
+            "11 - Delete a comment", "12 - Edit a comment", "13 - Upvote a post",
+            "14 - Downvote a post", "15 - Change password", "16 - Exit"};
 
     public static void main(String[] args) {
         String hostName = "localhost";
@@ -37,6 +42,8 @@ public class Client {
                     username = showUsernameTextInputDialog();
                     //send username to server to check if valid
                     writer.write(username);
+                    writer.println();
+                    writer.flush();
                     // server sends "VALID" if username is found in database
                     String response = reader.readLine();
                     if (response.equals("VALID")) {
@@ -65,6 +72,30 @@ public class Client {
                 writer.write(password);
                 JOptionPane.showMessageDialog(null, "New Account Created",
                         "Twitter", JOptionPane.INFORMATION_MESSAGE);
+            }
+            boolean runLoop = true;
+            while (runLoop) {
+                int action = displayOptions();
+                switch(action) {
+                    case 1:
+                        writer.write("Option 1");
+                        writer.println();
+                        writer.flush();
+                        String friendUsername = addOrRemoveFriend(0);
+                        break;
+                    case 2:
+                        writer.write("Option 2");
+                        writer.println();
+                        writer.flush();
+                        String removeUsername = addOrRemoveFriend(1);
+                        break;
+                    case 3:
+                        writer.write("Option 3");
+                        writer.println();
+                        writer.flush();
+                        
+                        
+                }
             }
 
 
@@ -140,5 +171,35 @@ public class Client {
 
         return text;
     }
+    public static int displayOptions() {
+        String searchOption;
+        do {
+            searchOption = (String) JOptionPane.showInputDialog(null, "Select an action",
+                    "Twitter", JOptionPane.QUESTION_MESSAGE, null, MENU,
+                    MENU[0]);
+            if (searchOption == null) {
+                return -1;
+            }
+        } while (searchOption.isEmpty());
+        return Integer.parseInt(searchOption.substring(0,1));
+    }
+    public static String addOrRemoveFriend(int choice) {
+        String text = "";
+        do {
+            if (choice == 0) {
+                text = JOptionPane.showInputDialog(null, "Enter the username of the friend you would like to add",
+                        "Twitter", JOptionPane.QUESTION_MESSAGE);
+            } else if (choice == 1) {
+                text = JOptionPane.showInputDialog(null, "Enter the username of the friend you would like to remove",
+                        "Twitter", JOptionPane.QUESTION_MESSAGE);
+            }
+            if (text.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Friend Username cannot be empty!", "Twitter",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } while (text.isEmpty());
+        return text;
+    }
+    
 
 }
