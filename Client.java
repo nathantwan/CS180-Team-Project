@@ -41,10 +41,12 @@ public class Client {
             System.out.println("Would you like to 1: Login or 2: Sign Up?");
             //option = loginOrSignUp();
             option = s.nextLine();
-            writer.write(option);
             boolean loop = true;
             if (option.equals("Login")) {
                 while (loop) {
+                    writer.write("Login");
+                    writer.println();
+                    writer.flush();
                     System.out.println("Enter your username");
                     username = s.nextLine();
                     //username = showUsernameTextInputDialog();
@@ -75,8 +77,11 @@ public class Client {
 
                     }
                 }
-            } else if (option.equals("Sign Up") {
+            } else if (option.equals("Sign Up")) {
                 while (true) {
+                    writer.write("Sign Up");
+                    writer.println();
+                    writer.flush();
                     System.out.println("Enter a username");
                     username = s.nextLine();
                     //username = showUsernameTextInputDialog();
@@ -101,8 +106,16 @@ public class Client {
 
             }
             boolean runLoop = true;
+
             while (runLoop) {
-                int action = displayOptions();
+                //int action = displayOptions();
+                System.out.println("Please select an option");
+                for (String i: MENU) {
+                    System.out.println(i);
+                }
+                int action = s.nextInt();
+                s.nextLine();
+
                 switch(action) {
                     case 1:
                         writer.write("Option 1");
@@ -141,12 +154,8 @@ public class Client {
                         writer.write(blockUsername);
                         writer.println();
                         writer.flush();
-                        boolean validBlock = Boolean.parseBoolean(reader.readLine());
-                        if (validBlock) {
-                            System.out.println("User successfully blocked");
-                        } else {
-                            System.out.println("User does not exist");
-                        }
+                        String validBlock = reader.readLine();
+                        System.out.println(validBlock);
                         break;
                     case 4:
                         writer.write("Option 4");
@@ -158,12 +167,8 @@ public class Client {
                         writer.write(unblockUsername);
                         writer.println();
                         writer.flush();
-                        boolean validunBlock = Boolean.parseBoolean(reader.readLine());
-                        if (validunBlock) {
-                            System.out.println("User successfully blocked");
-                        } else {
-                            System.out.println("User does not exist");
-                        }
+                        String validunBlock = reader.readLine();
+                        System.out.println(validunBlock);
                         break;
                     case 5:
                         writer.write("Option 5");
@@ -175,13 +180,8 @@ public class Client {
                         writer.write(viewUser);
                         writer.println();
                         writer.flush();
-                        boolean validUserView = Boolean.parseBoolean(reader.readLine());
-                        if (validUserView) {
-                            String userInfo = reader.readLine();
-                            System.out.println(userInfo);
-                        } else {
-                            System.out.println("User does not exist");
-                        }
+                        String validUserView = reader.readLine();
+                        System.out.println(validUserView);
                         break;
                     case 6:
                         writer.write("Option 6");
@@ -199,12 +199,152 @@ public class Client {
                         writer.write(caption);
                         writer.println();
                         writer.flush();
-
-
-
-
-
-
+                        System.out.println("What is the path for the image for your post?");
+                        String path = s.nextLine();
+                        writer.write(path);
+                        writer.println();
+                        writer.flush();
+                        break;
+                    case 8:
+                        writer.write("Option 8");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter the post number");
+                        int postNumber = s.nextInt();
+                        s.nextLine();
+                        writer.write(postNumber);
+                        writer.println();
+                        writer.flush();
+                        String postDeletionResult = reader.readLine();
+                        System.out.println(postDeletionResult);
+                        break;
+                    case 9:
+                        writer.write("Option 9");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter the post number");
+                        int postNumberEdit = s.nextInt();
+                        s.nextLine();
+                        writer.write(postNumberEdit);
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter a new caption");
+                        String newCaption = s.nextLine();
+                        writer.write(newCaption);
+                        writer.println();
+                        writer.flush();
+                        String editPostResposne = reader.readLine();
+                        System.out.println(editPostResposne);
+                        break;
+                    case 10:
+                        writer.write("Option 10");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter the post number");
+                        int commentPostNumber = s.nextInt();
+                        s.nextLine();
+                        writer.write(commentPostNumber);
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter your comment");
+                        String comment = s.nextLine();
+                        writer.write(comment);
+                        writer.println();
+                        writer.flush();
+                        String commentResult = reader.readLine();
+                        System.out.println(commentResult);
+                        break;
+                    case 11:
+                        writer.write("Option 11");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter the post number");
+                        int deleteCommentPost = s.nextInt();
+                        s.nextLine();
+                        writer.write(deleteCommentPost);
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter your comment number");
+                        int commentNum = s.nextInt();
+                        s.nextLine();
+                        writer.write(commentNum);
+                        writer.println();
+                        writer.flush();
+                        String deleteCommentResponse = reader.readLine();
+                        System.out.println(deleteCommentResponse);
+                        break;
+                    case 12:
+                        writer.write("Option 12");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter the post number");
+                        int editCommentPost = s.nextInt();
+                        s.nextLine();
+                        writer.write(editCommentPost);
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter your comment number");
+                        int editCommentNum = s.nextInt();
+                        s.nextLine();
+                        writer.write(editCommentNum);
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter your new comment");
+                        String newComment = s.nextLine();
+                        writer.write(newComment);
+                        writer.println();
+                        writer.flush();
+                        String editCommentResponse = reader.readLine();
+                        System.out.println(editCommentResponse);
+                        break;
+                    case 13:
+                        writer.write("Option 13");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter the post number");
+                        int upvotePost = s.nextInt();
+                        s.nextLine();
+                        writer.write(upvotePost);
+                        writer.println();
+                        writer.flush();
+                        String upvoteResponse = reader.readLine();
+                        System.out.println(upvoteResponse);
+                        break;
+                    case 14:
+                        writer.write("Option 14");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter the post number");
+                        int downvotePost = s.nextInt();
+                        s.nextLine();
+                        writer.write(downvotePost);
+                        writer.println();
+                        writer.flush();
+                        String downvoteResponse = reader.readLine();
+                        System.out.println(downvoteResponse);
+                        break;
+                    case 15:
+                        writer.write("Option 15");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter your old password");
+                        String oldPass = s.nextLine();
+                        writer.write(oldPass);
+                        writer.println();
+                        writer.flush();
+                        System.out.println("Enter your new password");
+                        String newPass = s.nextLine();
+                        writer.write(newPass);
+                        writer.println();
+                        writer.flush();
+                        String changePassResult = reader.readLine();
+                        System.out.println(changePassResult);
+                        break;
+                    case 16:
+                        runLoop = false;
+                        break;
+                    default:
+                        System.out.println("Please select a valid option");
 
                 }
             }
@@ -232,7 +372,7 @@ public class Client {
         }
     }
 
-    public static void showWelcomeMessageDialog() {
+    /*public static void showWelcomeMessageDialog() {
         JOptionPane.showMessageDialog(null, "Welcome to Twitter",
                 "Twitter", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -339,7 +479,7 @@ public class Client {
             }
         } while (text.isEmpty());
         return text;
-    }
+    } */
 
 
 
