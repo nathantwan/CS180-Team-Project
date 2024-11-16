@@ -33,6 +33,7 @@
 
    
 Phase 1 submitted to Vocareum Workspace by Nathan Wan.
+Phase 2 submitted to Vocareum Workspace by ___.
 
 InvalidPostException class: throw a new exception if a user tries to create a post that doesn't meet the criteria
 to create a post (having a caption and user).
@@ -96,3 +97,11 @@ friends, commenting on a post, and so on. The class implements TwitterInterface.
 
 TwitterInterface: Interface implemented by the Twitter class to structure the methods used to set up new users and 
 manage how users can interact with the app. 
+
+TwitterServer class: Implements Runnable to allow the users to log in and access the different features of the program, 
+such as adding friends, blocking users, changing user information, and interacting with other users and their unique
+feed.
+
+Client class: Creates a client that establishes a connection with TwitterServer that allows the user to log in or sign-up
+by checking the information with the data stored in the database. ClientTest is used to test if the exceptions are being
+thrown correctly.
