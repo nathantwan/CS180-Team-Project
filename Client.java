@@ -41,6 +41,7 @@ public class Client {
             System.out.println("Would you like to 1: Login or 2: Sign Up?");
             //option = loginOrSignUp();
             option = s.nextLine();
+            writer.write(option);
             boolean loop = true;
             if (option.equals("Login")) {
                 while (loop) {
@@ -107,53 +108,99 @@ public class Client {
                         writer.write("Option 1");
                         writer.println();
                         writer.flush();
-                        String friendUsername = addOrRemoveFriend(0);
+                        //String friendUsername = addOrRemoveFriend(0);
+                        System.out.println("Enter the username of the user you would like to add");
+                        String friendUsername = s.nextLine();
                         writer.write(friendUsername);
                         writer.println();
                         writer.flush();
+                        String valid = reader.readLine();
+                        System.out.println(valid);
 
                         break;
                     case 2:
                         writer.write("Option 2");
                         writer.println();
                         writer.flush();
-                        String removeUsername = addOrRemoveFriend(1);
+                        //String removeUsername = addOrRemoveFriend(1);
+                        System.out.println("Enter the username of the user you would like to remove");
+                        String removeUsername = s.nextLine();
                         writer.write(removeUsername);
                         writer.println();
                         writer.flush();
+                        String validRemoval = reader.readLine();
+                        System.out.println(validRemoval);
                         break;
                     case 3:
                         writer.write("Option 3");
                         writer.println();
                         writer.flush();
-                        String blockUsername = blockOrRemoveUser(0);
+                        //String blockUsername = blockOrRemoveUser(0);
+                        System.out.println("Enter the username of the user you would like to block");
+                        String blockUsername = s.nextLine();
                         writer.write(blockUsername);
                         writer.println();
                         writer.flush();
+                        boolean validBlock = Boolean.parseBoolean(reader.readLine());
+                        if (validBlock) {
+                            System.out.println("User successfully blocked");
+                        } else {
+                            System.out.println("User does not exist");
+                        }
                         break;
                     case 4:
                         writer.write("Option 4");
                         writer.println();
                         writer.flush();
-                        String unblockUsername = blockOrRemoveUser(1);
+                        //String unblockUsername = blockOrRemoveUser(1);
+                        System.out.println("Enter the username of the user you would like to block");
+                        String unblockUsername = s.nextLine();
                         writer.write(unblockUsername);
                         writer.println();
                         writer.flush();
+                        boolean validunBlock = Boolean.parseBoolean(reader.readLine());
+                        if (validunBlock) {
+                            System.out.println("User successfully blocked");
+                        } else {
+                            System.out.println("User does not exist");
+                        }
+                        break;
                     case 5:
                         writer.write("Option 5");
                         writer.println();
                         writer.flush();
-                        String viewUser = viewProfile();
+                        //String viewUser = viewProfile();
+                        System.out.println("Enter the username of the profile you would like to view");
+                        String viewUser = s.nextLine();
                         writer.write(viewUser);
                         writer.println();
                         writer.flush();
+                        boolean validUserView = Boolean.parseBoolean(reader.readLine());
+                        if (validUserView) {
+                            String userInfo = reader.readLine();
+                            System.out.println(userInfo);
+                        } else {
+                            System.out.println("User does not exist");
+                        }
                         break;
                     case 6:
                         writer.write("Option 6");
                         writer.println();
                         writer.flush();
+                        String feed = reader.readLine();
+                        System.out.println(feed);
                         break;
                     case 7:
+                        writer.write("Option 7");
+                        writer.println();
+                        writer.flush();
+                        System.out.println("What is the caption for your post?");
+                        String caption = s.nextLine();
+                        writer.write(caption);
+                        writer.println();
+                        writer.flush();
+
+
 
 
 
