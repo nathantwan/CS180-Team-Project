@@ -13,8 +13,8 @@ import java.util.Scanner;
  */
 
 public class Client {
-    private static final String[] MENU = new String[]{"1 - Add a friend", "2 - Remove a friend", "3 - Block a user" + "4 - Unblock a user"
-            ,"5 - View a user profile", "6 - View feed",
+    private static final String[] MENU = new String[]{"1 - Add a friend", "2 - Remove a friend", "3 - Block a user", "4 - Unblock a user",
+            "5 - View a user profile", "6 - View feed",
             "7 - Create a post", "8 - Delete a post",
             "9 - Edit a post", "10 - Create a comment",
             "11 - Delete a comment", "12 - Edit a comment", "13 - Upvote a post",
@@ -62,6 +62,8 @@ public class Client {
                         //password = showPasswordTextInputDialog();
                         // sends password
                         writer.write(password);
+                        writer.println();
+                        writer.flush();
                         boolean passwordResponse = Boolean.parseBoolean(reader.readLine());
                         if (passwordResponse) {
                             System.out.println("Login Success");
@@ -82,26 +84,43 @@ public class Client {
                     writer.write("Sign Up");
                     writer.println();
                     writer.flush();
+                    System.out.println("Enter your first name");
+                    writer.write(s.nextLine());
+                    writer.println();
+                    System.out.println("Enter your last name");
+                    writer.write(s.nextLine());
+                    writer.println();
+                    System.out.println("Enter the path for your profile picture. If no profile picture, enter null");
+                    writer.write(s.nextLine());
+                    writer.println();
                     System.out.println("Enter a username");
                     username = s.nextLine();
                     //username = showUsernameTextInputDialog();
                     writer.write(username);
                     writer.println();
                     writer.flush();
-                    System.out.println("Enter a password");
-                    password = s.nextLine();
-                    //password = showPasswordTextInputDialog();
-                    writer.write(password);
-                    writer.println();
-                    writer.flush();
-                    boolean passwordValid = Boolean.parseBoolean(reader.readLine());
-                    if (passwordValid) {
-                        System.out.println("New Account Created");
-                        break;
+
+                    boolean usernameValid = Boolean.parseBoolean(reader.readLine());
+                    if (usernameValid) {
+                        System.out.println("Enter a password");
+                        password = s.nextLine();
+                        //password = showPasswordTextInputDialog();
+                        writer.write(password);
+                        writer.println();
+                        writer.flush();
+                        boolean passwordValid = Boolean.parseBoolean(reader.readLine());
+                        if (passwordValid) {
+                            System.out.println("New Account Created");
+                            break;
+                        } else {
+                            System.out.println("Invalid password. Try Again!");
+                        }
+                        //JOptionPane.showMessageDialog(null, "New Account Created", "Twitter", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        System.out.println("Invalid password. Try Again!");
+                        System.out.println("Username taken. Try Again!");
                     }
-                    //JOptionPane.showMessageDialog(null, "New Account Created", "Twitter", JOptionPane.INFORMATION_MESSAGE);
+
+                    
                 }
 
             }
@@ -162,7 +181,7 @@ public class Client {
                         writer.println();
                         writer.flush();
                         //String unblockUsername = blockOrRemoveUser(1);
-                        System.out.println("Enter the username of the user you would like to block");
+                        System.out.println("Enter the username of the user you would like to unblock");
                         String unblockUsername = s.nextLine();
                         writer.write(unblockUsername);
                         writer.println();
