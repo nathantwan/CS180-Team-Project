@@ -4,11 +4,23 @@ import javax.swing.ImageIcon;
 import java.net.*;
 
 public class TwitterServer implements Runnable {
+    Socket socket;
     private ArrayList<User> users = new ArrayList<User>();
-    User u = new User("Yajushi", "Gokhale", "ygokhale", "password123", null);
-    User us = new User("Yajushi", "Gokhale", "ygokhale1", "password123", null);
+    // User u = new User("Yajushi", "Gokhale", "ygokhale", "password123", null);
+    // User us = new User("Yajushi", "Gokhale", "ygokhale1", "password123", null);
     private ArrayList<Post> posts = new ArrayList<Post>();
     private final Object obj = new Object();
+    
+    public TwitterServer(Socket socket) {
+        this.socket = socket;
+        // try {
+        //     serverSocket = new ServerSocket(4242);
+        // } catch (IOException e) {
+        //     System.out.println("Error: could not establish server");
+        // }
+    }
+
+    
 
     public void writeFile() {
         try {
@@ -149,7 +161,7 @@ public class TwitterServer implements Runnable {
     public String option5(String userprofile) { //user profile
         User other = getUser(userprofile);
         if (other == null) {
-            return "Error: Invalid username";
+            return "Error: Invalid username\nstop";
         } else {
             String toReturn = other.toString() + "\nstop";
             return toReturn;
@@ -161,7 +173,7 @@ public class TwitterServer implements Runnable {
             feed = user.displayFeed(posts);
         }   
         if (feed.size() == 0) {
-            return "There are no posts in your feed.";
+            return "There are no posts in your feed.\nstop";
         }
         String toReturn = "";
         for (Post p : feed) {
@@ -292,29 +304,31 @@ public class TwitterServer implements Runnable {
     }
 
     public void run() {
-        users.add(u);
-        users.add(us);
-        ServerSocket serverSocket = null;
-        Socket socket = null;
-        while (true) {
-            boolean canRun = true;
-            try {
-                serverSocket = new ServerSocket(4242);
+        // users.add(u);
+        // users.add(us);
+        
+        // Socket socket = null;
+        // while (true) {
+        //     boolean canRun = false;
+        //     try {
+        //         socket = serverSocket.accept();
+                // if (socket.isConnected()) {
+                //     System.out.println("connected: " + socket.isConnected());
+                // }
+        //             canRun = true;
+        //         }
+        //     } catch (IOException e) {
+        //         canRun = false;
+        //     }
 
-                socket = serverSocket.accept();
-            } catch (IOException e) {
-                canRun = false;
-            }
-
-            if (canRun) {
-                User user = null;
-                BufferedReader reader = null;
-                PrintWriter writer = null;
-                String option;
+            if (true) {
                 try {
-                    while (!socket.isClosed()) {
-                        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                        writer = new PrintWriter(socket.getOutputStream());
+                    User user = null;
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                    String option;
+                    boolean runLoop = true;
+                    while (runLoop) {
                         option = reader.readLine();
                         if (option.equals("Login")) {
                             String username = reader.readLine();
@@ -327,7 +341,6 @@ public class TwitterServer implements Runnable {
                             if (tempUser != null) {
                                 String password = reader.readLine();
                                 boolean pass = tempUser.getPassword().equals(password);
-                                System.out.println(pass);
                                 writer.write(String.valueOf(pass));
                                 writer.println();
                                 writer.flush();
@@ -479,9 +492,12 @@ public class TwitterServer implements Runnable {
                             writer.println();
                             writer.flush();
                         }
-                    
-                
-                    
+                        if (option.equals("Option 16")) {
+                            option16();
+                            runLoop = false;
+                            socket.close();
+                            break;
+                        }                
                     } 
                 } catch (IOException e) {
                         System.out.println("Error: Could not read values from client");
@@ -489,11 +505,23 @@ public class TwitterServer implements Runnable {
 
             }
         }
-    }
+    
     
 
-    public static void main(String[] args) {
-        Thread thread = new Thread(new TwitterServer());
-        thread.start();
+    public static void main(String[] args) throws IOException{
+        // Thread thread = new Thread(new TwitterServer());
+        // thread.start();
+
+        ServerSocket serverSocket = new ServerSocket(4242);
+
+        while (true) {
+            Socket socket = serverSocket.accept();
+            TwitterServer ts = new TwitterServer(socket);
+            new Thread(ts).start();
+
+        }
+
+        
+
     }
 }
