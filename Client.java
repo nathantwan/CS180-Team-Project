@@ -12,7 +12,7 @@ import java.util.Scanner;
  * @version Nov 3, 2024
  */
 
-public class Client {
+public class Client implements Runnable{
     private static final String[] MENU = new String[]{"1 - Add a friend", "2 - Remove a friend", "3 - Block a user", "4 - Unblock a user",
             "5 - View a user profile", "6 - View feed",
             "7 - Create a post", "8 - Delete a post",
@@ -20,7 +20,7 @@ public class Client {
             "11 - Delete a comment", "12 - Edit a comment", "13 - Upvote a post",
             "14 - Downvote a post", "15 - Change password", "16 - Exit"};
 
-    public static void main(String[] args) {
+    public void run() {
         Scanner s = new Scanner(System.in);
         String hostName = "localhost";
         int portNumber = 4242;
@@ -199,15 +199,23 @@ public class Client {
                         writer.write(viewUser);
                         writer.println();
                         writer.flush();
-                        String validUserView = reader.readLine();
-                        System.out.println(validUserView);
+                        String line = reader.readLine();
+                        while (line.equals("stop") == false) {
+                            System.out.println(line);
+                            line = reader.readLine();
+
+                        }
                         break;
                     case 6:
                         writer.write("Option 6");
                         writer.println();
                         writer.flush();
-                        String feed = reader.readLine();
-                        System.out.println(feed);
+                        String line2 = reader.readLine();
+                        while (line2.equals("stop") == false) {
+                            System.out.println(line2);
+                            line2 = reader.readLine();
+
+                        }
                         break;
                     case 7:
                         writer.write("Option 7");
@@ -360,7 +368,11 @@ public class Client {
                         System.out.println(changePassResult);
                         break;
                     case 16:
+                        writer.write("Option 16");
+                        writer.println();
+                        writer.flush();
                         runLoop = false;
+                        socket.close();
                         break;
                     default:
                         System.out.println("Please select a valid option");
@@ -389,6 +401,10 @@ public class Client {
                         JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+    public static void main(String[] args) {
+        Thread thread = new Thread(new Client());
+        thread.start();
     }
 
     /*public static void showWelcomeMessageDialog() {
