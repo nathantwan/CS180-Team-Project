@@ -6,18 +6,16 @@ import java.net.*;
 public class TwitterServer implements Runnable {
     Socket socket;
     private ArrayList<User> users = new ArrayList<User>();
-    // User u = new User("Yajushi", "Gokhale", "ygokhale", "password123", null);
-    // User us = new User("Yajushi", "Gokhale", "ygokhale1", "password123", null);
     private ArrayList<Post> posts = new ArrayList<Post>();
     private final Object obj = new Object();
+
+    public TwitterServer(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles, Socket socket) {
+        readFile(usernameFile, userFiles, postFiles);
+        this.socket = socket;
+    }
     
     public TwitterServer(Socket socket) {
         this.socket = socket;
-        // try {
-        //     serverSocket = new ServerSocket(4242);
-        // } catch (IOException e) {
-        //     System.out.println("Error: could not establish server");
-        // }
     }
 
     
@@ -304,214 +302,194 @@ public class TwitterServer implements Runnable {
     }
 
     public void run() {
-        // users.add(u);
-        // users.add(us);
-        
-        // Socket socket = null;
-        // while (true) {
-        //     boolean canRun = false;
-        //     try {
-        //         socket = serverSocket.accept();
-                // if (socket.isConnected()) {
-                //     System.out.println("connected: " + socket.isConnected());
-                // }
-        //             canRun = true;
-        //         }
-        //     } catch (IOException e) {
-        //         canRun = false;
-        //     }
+        if (true) {
+            try {
+                User user = null;
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                String option;
+                boolean runLoop = true;
+                while (runLoop) {
+                    option = reader.readLine();
+                    if (option.equals("Login")) {
+                        String username = reader.readLine();
+                        User tempUser = getUser(username); 
+                        boolean tempUserNull = (tempUser != null);
+                        writer.write(String.valueOf(tempUserNull));
+                        writer.println();
+                        writer.flush();
 
-            if (true) {
-                try {
-                    User user = null;
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    PrintWriter writer = new PrintWriter(socket.getOutputStream());
-                    String option;
-                    boolean runLoop = true;
-                    while (runLoop) {
-                        option = reader.readLine();
-                        if (option.equals("Login")) {
-                            String username = reader.readLine();
-                            User tempUser = getUser(username); 
-                            boolean tempUserNull = (tempUser != null);
-                            writer.write(String.valueOf(tempUserNull));
+                        if (tempUser != null) {
+                            String password = reader.readLine();
+                            boolean pass = tempUser.getPassword().equals(password);
+                            writer.write(String.valueOf(pass));
                             writer.println();
                             writer.flush();
 
-                            if (tempUser != null) {
-                                String password = reader.readLine();
-                                boolean pass = tempUser.getPassword().equals(password);
-                                writer.write(String.valueOf(pass));
-                                writer.println();
-                                writer.flush();
-
-                                if (pass) {
-                                    user = tempUser;
-                                }
+                            if (pass) {
+                                user = tempUser;
                             }
                         }
-                        if (option.equals("Sign Up")) {
-                            String firstName = reader.readLine();
-                            String lastName = reader.readLine();
-                            String pfp = reader.readLine();
-                            ImageIcon image = (pfp.equals("null")) ? null : new ImageIcon(pfp);
-                            String username = reader.readLine();
-                            User tempUser = getUser(username);
-                            boolean tempUserNull = (tempUser == null);
-                            System.out.println(tempUserNull);
-                            writer.write(String.valueOf(tempUserNull));
+                    }
+                    if (option.equals("Sign Up")) {
+                        String firstName = reader.readLine();
+                        String lastName = reader.readLine();
+                        String pfp = reader.readLine();
+                        ImageIcon image = (pfp.equals("null")) ? null : new ImageIcon(pfp);
+                        String username = reader.readLine();
+                        User tempUser = getUser(username);
+                        boolean tempUserNull = (tempUser == null);
+                        System.out.println(tempUserNull);
+                        writer.write(String.valueOf(tempUserNull));
+                        writer.println();
+                        writer.flush();
+
+                        if (tempUserNull) {
+                            String password = reader.readLine();
+                            boolean validPass = password.length() >= 7 && password.length() <= 12;
+                            writer.write(String.valueOf(validPass));
                             writer.println();
                             writer.flush();
 
-                            if (tempUserNull) {
-                                String password = reader.readLine();
-                                boolean validPass = password.length() >= 7 && password.length() <= 12;
-                                writer.write(String.valueOf(validPass));
-                                writer.println();
-                                writer.flush();
-
-                                if (validPass) {
-                                    user = new User(firstName, lastName, username, password, image);
-                                    users.add(user);
-                                }
-
+                            if (validPass) {
+                                user = new User(firstName, lastName, username, password, image);
+                                users.add(user);
                             }
 
                         }
-                        if (option.equals("Option 1")) {
-                            String friendUsername = reader.readLine();
-                            String output = option1(friendUsername, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 2")) {
-                            String removeUsername = reader.readLine();
-                            String output = option2(removeUsername, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 3")) {
-                            String blockUsername = reader.readLine();
-                            String output = option3(blockUsername, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                            
-                        }
-                        if (option.equals("Option 4")) {
-                            String unblockUsername = reader.readLine();
-                            String output = option4(unblockUsername, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 5")) {
-                            String userProfile = reader.readLine();
-                            String output = option5(userProfile);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 6")) {
-                            String output = option6(user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 7")) {
-                            String caption = reader.readLine();
-                            String path = reader.readLine();
-                            try {
-                                option7(user, caption, path);
-                            } catch (InvalidPostException e) {
-                                System.out.println("Error: Invalid Post");
-                            }
-                            
-                        }
-                        if (option.equals("Option 8")) {
-                            int postNum = Integer.parseInt(reader.readLine());
-                            String output = option8(postNum, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 9")) {
-                            int postNum = Integer.parseInt(reader.readLine());
-                            String caption = reader.readLine();
-                            String output = option9(postNum, caption, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 10")) {
-                            int postNum = Integer.parseInt(reader.readLine());
-                            String comment = reader.readLine();
-                            String output = option10(postNum, comment, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 11")) {
-                            int postNum = Integer.parseInt(reader.readLine());
-                            int commentNum = Integer.parseInt(reader.readLine());
-                            String output = option11(postNum, commentNum, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 12")) {
-                            int postNum = Integer.parseInt(reader.readLine());
-                            int commentNum = Integer.parseInt(reader.readLine());
-                            String newComment = reader.readLine();
-                            String output = option12(postNum, commentNum, newComment, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 13")) {
-                            int postNum = Integer.parseInt(reader.readLine());
-                            String output = option13(postNum);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 14")) {
-                            int postNum = Integer.parseInt(reader.readLine());
-                            String output = option14(postNum);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 15")) {
-                            String oldPass = reader.readLine();
-                            String newPass = reader.readLine();
-                            String output = option15(oldPass, newPass, user);
-                            writer.write(output);
-                            writer.println();
-                            writer.flush();
-                        }
-                        if (option.equals("Option 16")) {
-                            option16();
-                            runLoop = false;
-                            socket.close();
-                            break;
-                        }                
-                    } 
-                } catch (IOException e) {
-                        System.out.println("Error: Could not read values from client");
-                }
 
+                    }
+                    if (option.equals("Option 1")) {
+                        String friendUsername = reader.readLine();
+                        String output = option1(friendUsername, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 2")) {
+                        String removeUsername = reader.readLine();
+                        String output = option2(removeUsername, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 3")) {
+                        String blockUsername = reader.readLine();
+                        String output = option3(blockUsername, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                        
+                    }
+                    if (option.equals("Option 4")) {
+                        String unblockUsername = reader.readLine();
+                        String output = option4(unblockUsername, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 5")) {
+                        String userProfile = reader.readLine();
+                        String output = option5(userProfile);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 6")) {
+                        String output = option6(user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 7")) {
+                        String caption = reader.readLine();
+                        String path = reader.readLine();
+                        try {
+                            option7(user, caption, path);
+                        } catch (InvalidPostException e) {
+                            System.out.println("Error: Invalid Post");
+                        }
+                        
+                    }
+                    if (option.equals("Option 8")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        String output = option8(postNum, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 9")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        String caption = reader.readLine();
+                        String output = option9(postNum, caption, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 10")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        String comment = reader.readLine();
+                        String output = option10(postNum, comment, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 11")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        int commentNum = Integer.parseInt(reader.readLine());
+                        String output = option11(postNum, commentNum, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 12")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        int commentNum = Integer.parseInt(reader.readLine());
+                        String newComment = reader.readLine();
+                        String output = option12(postNum, commentNum, newComment, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 13")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        String output = option13(postNum);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 14")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        String output = option14(postNum);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 15")) {
+                        String oldPass = reader.readLine();
+                        String newPass = reader.readLine();
+                        String output = option15(oldPass, newPass, user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Option 16")) {
+                        option16();
+                        runLoop = false;
+                        socket.close();
+                        break;
+                    }                
+                } 
+            } catch (IOException e) {
+                    System.out.println("Error: Could not read values from client");
             }
+
         }
+    }
     
     
 
     public static void main(String[] args) throws IOException{
-        // Thread thread = new Thread(new TwitterServer());
-        // thread.start();
-
         ServerSocket serverSocket = new ServerSocket(4242);
 
         while (true) {
@@ -520,8 +498,6 @@ public class TwitterServer implements Runnable {
             new Thread(ts).start();
 
         }
-
-        
 
     }
 }
