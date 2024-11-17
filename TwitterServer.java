@@ -151,7 +151,8 @@ public class TwitterServer implements Runnable {
         if (other == null) {
             return "Error: Invalid username";
         } else {
-            return other.toString();
+            String toReturn = other.toString() + "\nstop";
+            return toReturn;
         }
     }
     public String option6(User user) { //display feed
@@ -166,7 +167,7 @@ public class TwitterServer implements Runnable {
         for (Post p : feed) {
             toReturn += p.toString() + "\n";
         }
-        toReturn = toReturn.substring(0, toReturn.length() - 1);
+        toReturn = toReturn.substring(0, toReturn.length() - 1) + "\nstop";
         return toReturn;
     }
     public void option7(User user, String caption, String path) throws InvalidPostException { //create post
@@ -409,7 +410,12 @@ public class TwitterServer implements Runnable {
                         if (option.equals("Option 7")) {
                             String caption = reader.readLine();
                             String path = reader.readLine();
-                            option7(user, caption, path);
+                            try {
+                                option7(user, caption, path);
+                            } catch (InvalidPostException e) {
+                                System.out.println("Error: Invalid Post");
+                            }
+                            
                         }
                         if (option.equals("Option 8")) {
                             int postNum = Integer.parseInt(reader.readLine());
