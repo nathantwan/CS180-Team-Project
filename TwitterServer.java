@@ -489,14 +489,19 @@ public class TwitterServer implements Runnable {
     
     
 
-    public static void main(String[] args) throws IOException{
-        ServerSocket serverSocket = new ServerSocket(4242);
+    public static void main(String[] args) throws IOException {
+        try {
 
-        while (true) {
-            Socket socket = serverSocket.accept();
-            TwitterServer ts = new TwitterServer(socket);
-            new Thread(ts).start();
+            ServerSocket serverSocket = new ServerSocket(4242);
 
+            while (true) {
+                Socket socket = serverSocket.accept();
+                TwitterServer ts = new TwitterServer(socket);
+                new Thread(ts).start();
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error: Could not create server-client connection");
         }
 
     }
