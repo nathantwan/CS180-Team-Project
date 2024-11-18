@@ -12,7 +12,7 @@ import java.util.Scanner;
  * @version Nov 3, 2024
  */
 
-public class Client implements Runnable{
+public class Client implements ClientInterface, Runnable {
     private static final String[] MENU = new String[]{"1 - Add a friend", "2 - Remove a friend", "3 - Block a user", "4 - Unblock a user",
             "5 - View a user profile", "6 - View feed",
             "7 - Create a post", "8 - Delete a post",
