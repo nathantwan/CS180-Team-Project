@@ -109,3 +109,5 @@ feed.
 Client class: Creates a client that establishes a connection with TwitterServer that allows the user to log in or sign-up
 by checking the information with the data stored in the database. ClientTest is used to test if the exceptions are being
 thrown correctly.
+
+ClientInterface: Interface implemented by Client class.
