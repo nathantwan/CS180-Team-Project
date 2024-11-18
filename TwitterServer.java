@@ -3,7 +3,7 @@ import java.util.*;
 import javax.swing.ImageIcon;
 import java.net.*;
 
-public class TwitterServer implements Runnable {
+public class TwitterServer implements Runnable, TwitterServerInterface {
     Socket socket;
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Post> posts = new ArrayList<Post>();
