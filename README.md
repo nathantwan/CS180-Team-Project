@@ -3,7 +3,7 @@
 
 1. Instructions on how to compile and run your project.
    In order to run the project, the Twitter class must be run. When trying to recreate the database from hardware, the
-   public Twitter(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) method.
+   public TwitterServer(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles, Socket socket) constructor.
 
    usernameFile contains information about each user in the following format:
 
@@ -98,7 +98,11 @@ friends, commenting on a post, and so on. The class implements TwitterInterface.
 TwitterInterface: Interface implemented by the Twitter class to structure the methods used to set up new users and 
 manage how users can interact with the app. 
 
-TwitterServer class: Implements Runnable to allow the users to log in and access the different features of the program, 
+TwitterServer class: Implements Runnable and TwitterServerInterface to allow the users to log in and access the different features of the program, 
+such as adding friends, blocking users, changing user information, and interacting with other users and their unique
+feed.
+
+TwitterServerInterface: Interface implemented by TwitterServer class to allow the users to log in and access the different features of the program, 
 such as adding friends, blocking users, changing user information, and interacting with other users and their unique
 feed.
 
