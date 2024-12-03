@@ -80,7 +80,7 @@ public class PostTest1 {
         assertEquals("This is a new caption", testPost1.getCaption());
     }
 
-   @Test
+    @Test
     public void incrementUpvote() {
         testPost1.incrementUpvote();
         assertEquals(1, testPost1.getUpvote());
@@ -100,10 +100,10 @@ public class PostTest1 {
     }
 
      //Checks that a post with no caption throws an exception
-     @Test(expected = InvalidPostException.class)
-     public void testEmptyCaption() throws InvalidPostException {
-         new Post("", testImage, testUser1);
-     }
+    @Test(expected = InvalidPostException.class)
+    public void testEmptyCaption() throws InvalidPostException {
+        new Post("", testImage, testUser1);
+    }
 
     //Ensures that the addComment method works
     @Test
@@ -169,7 +169,7 @@ public class PostTest1 {
             if (!testPost1.getComments().isEmpty()) {
                 for (Comment comment : testPost1.getComments()) {
                     String expectedCommentLine = comment.getText() + ", " + comment.getPostOwner().getUsername() 
-                    + ", " + comment.getCommenter().getUsername();
+                         + ", " + comment.getCommenter().getUsername();
 
                     assertEquals(expectedCommentLine, reader.readLine());
                 }
