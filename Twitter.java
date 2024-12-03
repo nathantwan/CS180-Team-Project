@@ -10,10 +10,10 @@ import javax.swing.ImageIcon;
  * @version Nov 3, 2024
  */
 
-public class Twitter extends Thread implements TwitterInterface{
-   private ArrayList<User> users = new ArrayList<User>();
-   private ArrayList<Post> posts = new ArrayList<Post>();
-   private final String MENU = "1 - Add a friend\n" + "2 - Remove a friend\n"
+public class Twitter extends Thread implements TwitterInterface {
+    private ArrayList<User> users = new ArrayList<User>();
+    private ArrayList<Post> posts = new ArrayList<Post>();
+    private final String menu = "1 - Add a friend\n" + "2 - Remove a friend\n"
                             + "3 - Block a user\n" + "4 - Unblock a user\n" + 
                             "5 - View a user profile\n" + "6 - View feed\n" +
                             "7 - Create a post\n" + "8 - Delete a post\n" + 
@@ -32,7 +32,7 @@ public class Twitter extends Thread implements TwitterInterface{
 
     public User createNewUser(Scanner s) {
         User u = new User(s);
-        synchronized(obj) {
+        synchronized (obj) {
             users.add(u);
         }
         return u;
@@ -74,7 +74,7 @@ public class Twitter extends Thread implements TwitterInterface{
                 System.out.println("The username you entered has not been created.");
                 System.out.println("Would you like to create a new user? (Y/N): ");
 
-                synchronized (obj){
+                synchronized (obj) {
                     if (s.nextLine().toLowerCase().charAt(0) == 'y') {
                         return createNewUser(s);
                     } else {
@@ -107,7 +107,7 @@ public class Twitter extends Thread implements TwitterInterface{
         try {
             PrintWriter pw = new PrintWriter(new FileOutputStream(new File("users.txt"), false));
             synchronized (obj) {
-                for (User u : users) {// Write users
+                for (User u : users) { // Write users
                     u.writeFile(); //write specifc user info
                     String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture().getDescription();
                     String userInfo = u.getName() + ", " + u.getUsername() + ", " + u.getPassword() + ", " + picture;
@@ -156,7 +156,7 @@ public class Twitter extends Thread implements TwitterInterface{
 
                 ArrayList<User> blocked = new ArrayList<User>();
                 username = bfr.readLine();
-                while (username != null){
+                while (username != null) {
                     blocked.add(getUser(username));
                     username = bfr.readLine();
                 }
@@ -170,7 +170,8 @@ public class Twitter extends Thread implements TwitterInterface{
                 String postInfo = bfr.readLine();
                 String[] postArray = postInfo.split(", ");
                 ImageIcon im = (postArray[1].equals("null")) ? null : new ImageIcon(postArray[1]);
-                Post p = new Post(postArray[0], im, getUser(postArray[4]), Integer.parseInt(postArray[2]), Integer.parseInt(postArray[3]));
+                Post p = new Post(postArray[0], im, getUser(postArray[4]), 
+                                  Integer.parseInt(postArray[2]), Integer.parseInt(postArray[3]));
                 synchronized (obj) {
                     posts.add(p);
                 }
@@ -205,9 +206,9 @@ public class Twitter extends Thread implements TwitterInterface{
         }
 
         while (true) {
-            System.out.println(MENU);
+            System.out.println(menu);
             int option;
-            synchronized(obj) {
+            synchronized (obj) {
                 option = s.nextInt();
                 s.nextLine();
             }
@@ -300,7 +301,8 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
             if (option == 8) { //delete post
-                System.out.println("Please enter the number of the post you would like to delete (Note the first post is number 0):");
+                System.out.print("Please enter the number of the post you would ");
+                System.out.println("like to delete (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
                     postNum = s.nextInt();
@@ -321,7 +323,8 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
             if (option == 9) { //edit post
-                System.out.println("Please enter the number of the post you would like to edit (Note the first post is number 0):");
+                System.out.print("Please enter the number of the ")
+                System.out.println("post you would like to edit (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
                     postNum = s.nextInt();
@@ -349,7 +352,8 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
             if (option == 10) { //comment on post
-                System.out.println("Please enter the number of the post you would like to comment on (Note the first post is number 0):");
+                System.out.print("Please enter the number of the ");
+                System.out.println("post you would like to comment on (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
                     postNum = s.nextInt();
@@ -361,18 +365,19 @@ public class Twitter extends Thread implements TwitterInterface{
                     } else {
                         Post p = posts.get(postNum);
                         System.out.println("Enter the comment");
-                            String caption = s.nextLine();
-                            if (caption == null || caption.length() == 0) {
-                                System.out.println("Error: Invalid comment");
-                            } else {
-                                p.addComment(caption, p.getUser(), user, p);
-                                System.out.println("Comment created");
-                            }
+                        String caption = s.nextLine();
+                        if (caption == null || caption.length() == 0) {
+                            System.out.println("Error: Invalid comment");
+                        } else {
+                            p.addComment(caption, p.getUser(), user, p);
+                            System.out.println("Comment created");
+                        }
                     }
                 }
             }
-            if (option == 11) {//delete post comment
-                System.out.println("Please enter the number of the post you would like to delete the comment on (Note the first post is number 0):");
+            if (option == 11) { //delete post comment
+                System.out.print("Please enter the number of the ");
+                System.out.println("post you would like to delete the comment on (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
                     postNum = s.nextInt();
@@ -383,13 +388,16 @@ public class Twitter extends Thread implements TwitterInterface{
                         System.out.println("Error: Post could not be found");
                     } else {
                         Post p = posts.get(postNum);
-                        System.out.println("Please enter the number of the comment you would like to delete (Note the first comment in number 0):");
-                        int commentNum = s.nextInt(); s.nextLine();
+                        System.out.print("Please enter the number of the comment you ");
+                        System.out.println("would like to delete (Note the first comment in number 0):");
+                        int commentNum = s.nextInt(); 
+                        s.nextLine();
                         if (commentNum < 0 || commentNum >= p.getComments().size()) {
                             System.out.println("Error: Comment could not be found");
                         } else {
                             Comment comment = p.getComments().get(commentNum);
-                            if (comment.getCommenter().equals(user) == false && comment.getPostOwner().equals(user) == false) {
+                            if (comment.getCommenter().equals(user) == false 
+                                && comment.getPostOwner().equals(user) == false) {
                                 System.out.println("Error: You do not have the permissions to delete this comment");
                             } else {
                                 p.getComments().remove(comment);
@@ -400,7 +408,8 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
             if (option == 12) { //edit comment
-                System.out.println("Please enter the number of the post you would like to edit the comment on (Note the first post is number 0):");
+                System.out.print("Please enter the number of the post you ");
+                System.out.println("would like to edit the comment on (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
                     postNum = s.nextInt();
@@ -411,8 +420,10 @@ public class Twitter extends Thread implements TwitterInterface{
                         System.out.println("Error: Post could not be found");
                     } else {
                         Post p = posts.get(postNum);
-                        System.out.println("Please enter the number of the comment you would like to edit (Note the first comment in number 0):");
-                        int commentNum = s.nextInt(); s.nextLine();
+                        System.out.print("Please enter the number of the comment ");
+                        System.out.println("you would like to edit (Note the first comment in number 0):");
+                        int commentNum = s.nextInt(); 
+                        s.nextLine();
                         if (commentNum < 0 || commentNum >= p.getComments().size()) {
                             System.out.println("Error: Comment could not be found");
                         } else {
@@ -434,7 +445,8 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
             if (option == 13) { //upvote post
-                System.out.println("Please enter the number of the post you would like to upvote (Note the first post is number 0):");
+                System.out.print("Please enter the number of the post you ");
+                System.out.println("would like to upvote (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
                     postNum = s.nextInt();
@@ -451,7 +463,8 @@ public class Twitter extends Thread implements TwitterInterface{
                 }
             }
             if (option == 14) { //downvote post
-                System.out.println("Please enter the number of the post you would like to downvote (Note the first post is number 0):");
+                System.out.print("Please enter the number of the post you would ");
+                System.out.println("like to downvote (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
                     postNum = s.nextInt();
@@ -476,7 +489,7 @@ public class Twitter extends Thread implements TwitterInterface{
                 System.out.println(output);
 
             }
-            if(option == 16) { //end run and save to file
+            if (option == 16) { //end run and save to file
                 writeFile();
                 s.close();
                 return;
