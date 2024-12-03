@@ -30,7 +30,7 @@ public class User implements UserInterface {
         this.username = username;
         this.password = password;
         this.profilePicture = profilePicture;
-        synchronized(obj) {
+        synchronized (obj) {
             usernameArray.add(username);
         }
         
@@ -70,7 +70,7 @@ public class User implements UserInterface {
                 System.out.println("This username is taken. Please enter another username.");
             } else {
                 username = input;
-                synchronized(obj) {
+                synchronized (obj) {
                     usernameArray.add(username);
                 }
                 break;
@@ -122,7 +122,7 @@ public class User implements UserInterface {
     public ImageIcon getProfilePicture() {
         return profilePicture;
     }
-    public ArrayList<User> getFriends(){
+    public ArrayList<User> getFriends() {
         return friends;
     }
     public ArrayList<User> getBlocked() {
@@ -137,8 +137,8 @@ public class User implements UserInterface {
     public void setBlocked(ArrayList<User> blocked) {
         this.blocked = blocked;
     }
-    public void setProfilePicure(ImageIcon profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfilePicure(ImageIcon profilePic) {
+        this.profilePicture = profilePic;
     }
     public boolean equals(Object other) { //use for user search
         if (!(other instanceof User)) {
@@ -160,31 +160,31 @@ public class User implements UserInterface {
 
     //adding a friend
     public void addFriend(User f) {
-        if(!friends.contains(f)) {
+        if (!friends.contains(f)) {
             friends.add(f);
         }
-        if(blocked.contains(f)) { //unblocks the user if they were previously blocked
+        if (blocked.contains(f)) { //unblocks the user if they were previously blocked
             blocked.remove(f);
         }
     }
 
     public void blockUser(User b) {
-        if(!blocked.contains(b)) {
+        if (!blocked.contains(b)) {
             blocked.add(b);
         }
-        if(friends.contains(b)) {//removes blocked user from friends list
+        if (friends.contains(b)) { //removes blocked user from friends list
             friends.remove(b);
         }
     }
 
     public void unblock(User b) {
-        if(blocked.contains(b)) {
+        if (blocked.contains(b)) {
             blocked.remove(b);
         }
     }
 
     public void removeFriend(User f) {
-        if(friends.contains(f)) {
+        if (friends.contains(f)) {
             friends.remove(f);
         }
     }
