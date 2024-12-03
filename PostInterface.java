@@ -22,8 +22,8 @@ public interface PostInterface {
     void setPost(String caption, ImageIcon image);
     ArrayList<Comment> getComments();
     void addComment(String text, User postOwner, User commenter, Post post);
-    void deleteComment(Comment comment, User user);
-    void editComment(String text, Comment comment, User user) throws InvalidCommentException;
+    void deleteComment(Comment comment, User userInfo);
+    void editComment(String text, Comment comment, User userInfo) throws InvalidCommentException;
     boolean equals(Object o);
     String toString();
     int getPostNumber();
