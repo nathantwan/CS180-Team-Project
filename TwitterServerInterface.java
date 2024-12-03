@@ -1,3 +1,12 @@
+/**
+ * Twitter Server Interface
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Yajushi
+ * @version Nov 14, 2024
+ */
+
 public interface TwitterServerInterface {
     void writeFile();
     void readFile(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles);
