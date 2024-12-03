@@ -22,8 +22,8 @@ public class Comment implements CommentInterface {
         this.post = post;
     }
     //getters and setters
-    public void setComment(String text) {
-        this.text = text;
+    public void setComment(String words) {
+        this.text = words;
     }
     public String getText() {
         return text;
