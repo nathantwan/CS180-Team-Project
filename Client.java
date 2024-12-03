@@ -4,21 +4,23 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 /**
- * SearchClient class
+ * Clinet Class
  * <p>
- * Purdue University -- CS18000 -- homework 11
+ * Purdue University -- CS18000 -- Phase 2
  *
  * @author Nathan Wan
- * @version Nov 3, 2024
+ * @version Nov 17, 2024
  */
 
 public class Client implements ClientInterface, Runnable {
-    private static final String[] MENU = new String[]{"1 - Add a friend", "2 - Remove a friend", "3 - Block a user", "4 - Unblock a user",
-            "5 - View a user profile", "6 - View feed",
-            "7 - Create a post", "8 - Delete a post",
-            "9 - Edit a post", "10 - Create a comment",
-            "11 - Delete a comment", "12 - Edit a comment", "13 - Upvote a post",
-            "14 - Downvote a post", "15 - Change password", "16 - Exit"};
+    private static final String[] MENU = new String[]{"1 - Add a friend", 
+                                                      "2 - Remove a friend", "3 - Block a user", "4 - Unblock a user", 
+                                                      "5 - View a user profile", "6 - View feed",
+                                                      "7 - Create a post", "8 - Delete a post",
+                                                      "9 - Edit a post", "10 - Create a comment", 
+                                                      "11 - Delete a comment", "12 - Edit a comment", 
+                                                      "13 - Upvote a post",
+                                                      "14 - Downvote a post", "15 - Change password", "16 - Exit"};
 
     public void run() {
         Scanner s = new Scanner(System.in);
@@ -67,14 +69,14 @@ public class Client implements ClientInterface, Runnable {
                         boolean passwordResponse = Boolean.parseBoolean(reader.readLine());
                         if (passwordResponse) {
                             System.out.println("Login Success");
-                            //JOptionPane.showMessageDialog(null, "Login Success", "Twitter", JOptionPane.INFORMATION_MESSAGE);
+
                             loop = false;
                         } else {
-                            //JOptionPane.showMessageDialog(null, "Password is incorrect", "Twitter", JOptionPane.INFORMATION_MESSAGE);
+
                             System.out.println("Password is incorrect");
                         }
                     } else {
-                        //JOptionPane.showMessageDialog(null, "Username doesn't exist", "Twitter", JOptionPane.INFORMATION_MESSAGE);
+
                         System.out.println("Username does not exist");
 
                     }
@@ -115,7 +117,6 @@ public class Client implements ClientInterface, Runnable {
                         } else {
                             System.out.println("Invalid password. Try Again!");
                         }
-                        //JOptionPane.showMessageDialog(null, "New Account Created", "Twitter", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         System.out.println("Username taken. Try Again!");
                     }
@@ -407,114 +408,7 @@ public class Client implements ClientInterface, Runnable {
         thread.start();
     }
 
-    /*public static void showWelcomeMessageDialog() {
-        JOptionPane.showMessageDialog(null, "Welcome to Twitter",
-                "Twitter", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public static void showConnectionEstablishedDialog() {
-        JOptionPane.showMessageDialog(null, "Connection Established",
-                "Twitter", JOptionPane.INFORMATION_MESSAGE);
-    }
-    public static String loginOrSignUp() {
-        String option;
-        do {
-            option = (String) JOptionPane.showInputDialog(null, "Would you like to login or signup?",
-                    "Twitter", JOptionPane.QUESTION_MESSAGE, null, new String[]{"Login", "Sign Up"}, new String[0] );
-            if (option.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "You must pick an option", "Search Engine",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } while (option.isEmpty() || option == null);
-
-        return option;
-    }
-
-
-    public static String showUsernameTextInputDialog() {
-        String text;
-        do {
-            text = JOptionPane.showInputDialog(null, "Enter your username",
-                    "Twitter", JOptionPane.QUESTION_MESSAGE);
-            if (text.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Username cannot be empty!", "Twitter",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } while (text.isEmpty() || text == null);
-
-        return text;
-    }
-    public static String showPasswordTextInputDialog() {
-        String text;
-        do {
-            text = JOptionPane.showInputDialog(null, "Enter your password",
-                    "Twitter", JOptionPane.QUESTION_MESSAGE);
-            if (text.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Password cannot be empty!", "Twitter",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } while (text.isEmpty() || text == null);
-
-        return text;
-    }
-    public static int displayOptions() {
-        String searchOption;
-        do {
-            searchOption = (String) JOptionPane.showInputDialog(null, "Select an action",
-                    "Twitter", JOptionPane.QUESTION_MESSAGE, null, MENU,
-                    MENU[0]);
-            if (searchOption == null) {
-                return -1;
-            }
-        } while (searchOption.isEmpty());
-        return Integer.parseInt(searchOption.substring(0,1));
-    }
-    public static String addOrRemoveFriend(int choice) {
-        String text = "";
-        do {
-            if (choice == 0) {
-                text = JOptionPane.showInputDialog(null, "Enter the username of the friend you would like to add",
-                        "Twitter", JOptionPane.QUESTION_MESSAGE);
-            } else if (choice == 1) {
-                text = JOptionPane.showInputDialog(null, "Enter the username of the friend you would like to remove",
-                        "Twitter", JOptionPane.QUESTION_MESSAGE);
-            }
-            if (text.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Friend Username cannot be empty!", "Twitter",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } while (text.isEmpty());
-        return text;
-    }
-    public static String blockOrRemoveUser(int choice) {
-        String text = "";
-        do {
-            if (choice == 0) {
-                text = JOptionPane.showInputDialog(null, "Enter the username of the user you would like to block",
-                        "Twitter", JOptionPane.QUESTION_MESSAGE);
-            } else if (choice == 1) {
-                text = JOptionPane.showInputDialog(null, "Enter the username of the user you would like to unblock",
-                        "Twitter", JOptionPane.QUESTION_MESSAGE);
-            }
-            if (text.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "User cannot be empty!", "Twitter",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } while (text.isEmpty());
-        return text;
-    }
-    public static String viewProfile() {
-        String text = "";
-        do {
-            text = JOptionPane.showInputDialog(null, "Enter the username of the profile you would like to view",
-                        "Twitter", JOptionPane.QUESTION_MESSAGE);
-            if (text.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "User cannot be empty!", "Twitter",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } while (text.isEmpty());
-        return text;
-    } */
+   
 
 
 
