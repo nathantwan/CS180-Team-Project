@@ -12,7 +12,7 @@ import java.io.*;
  * @version Nov 3, 2024
  */
 
-public class Post implements PostInterface{
+public class Post implements PostInterface { 
     private String caption;
     private ImageIcon image;
     private int upvote;
@@ -33,7 +33,7 @@ public class Post implements PostInterface{
         this.user = user;
         this.upvote = 0;
         this.downvote = 0;
-        synchronized(obj) {
+        synchronized (obj) {
             this.postNumber = counter;
             counter++;
         }
@@ -48,7 +48,7 @@ public class Post implements PostInterface{
         this.user = user;
         this.upvote = upvote;
         this.downvote = downvote;
-        synchronized(obj) {
+        synchronized (obj) {
             this.postNumber = counter;
             counter++;
         }
@@ -58,7 +58,7 @@ public class Post implements PostInterface{
     public Post(User user, Scanner scan) {
         while (caption == null || caption.length() == 0) {
             System.out.println("Enter your caption:");
-            synchronized(obj) {
+            synchronized (obj) {
                 caption = scan.nextLine();
             }
             if (caption == null || caption.length() == 0) {
@@ -104,9 +104,9 @@ public class Post implements PostInterface{
         this.downvote++;
     }
 
-    public void setPost(String caption, ImageIcon image) {
-        this.caption = caption;
-        this.image = image;
+    public void setPost(String text, ImageIcon pic) {
+        this.caption = text;
+        this.image = pic;
     }
 
     public ArrayList<Comment> getComments() {
@@ -122,8 +122,8 @@ public class Post implements PostInterface{
         }
     }
 
-    public void deleteComment(Comment comment, User user) {
-        if (!(comment.getPostOwner().equals(user)) && !(comment.getCommenter().equals(user))) {
+    public void deleteComment(Comment comment, User userInfo) {
+        if (!(comment.getPostOwner().equals(userInfo)) && !(comment.getCommenter().equals(userInfo))) {
             System.out.println("You do not have permission");
             return;
         }
@@ -141,9 +141,9 @@ public class Post implements PostInterface{
         }
     }
 
-    public void editComment(String text, Comment comment, User user) throws InvalidCommentException {
+    public void editComment(String text, Comment comment, User userInfo) throws InvalidCommentException {
         int index = -1;
-        if (!(comment.getCommenter().equals(user))) {
+        if (!(comment.getCommenter().equals(userInfo))) {
             System.out.println("You do not have permission!");
             return;
         }
@@ -201,10 +201,13 @@ public class Post implements PostInterface{
         File f = new File(fileName);
         try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
             String im = (image == null) ? "null" : image.getDescription();
-            pw.write(caption + ", " +  im + ", " + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
-            if(!(comments == null || comments.size() == 0)) {
+            pw.write(caption + ", " +  im + ", " 
+                     + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
+            if (!(comments == null || comments.size() == 0)) {
                 for (Comment comment : comments) {
-                    pw.write(comment.getText() + ", " + comment.getPostOwner().getUsername() + ", " + comment.getCommenter().getUsername() + "\n");
+                    pw.write(comment.getText() + 
+                             ", " + comment.getPostOwner().getUsername() 
+                             + ", " + comment.getCommenter().getUsername() + "\n");
                 }
             }
 
