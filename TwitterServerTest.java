@@ -8,6 +8,16 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Server Tests
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Rafael Fletes
+ * @version Nov 16, 2024
+ */
+
+
 class TwitterServerTest {
     private TwitterServer server;
     private User testUser;
@@ -67,8 +77,8 @@ class TwitterServerTest {
 
     @Test
     void testOption3BlockUser() {
-        User blocked = new User("Jane", "Smith", "janesmith", "password123", null);
-        server.users.add(blocked);
+        User blocke = new User("Jane", "Smith", "janesmith", "password123", null);
+        server.users.add(blocke);
 
         String result = server.option3("janesmith", testUser);
         assertEquals("User blocked.", result);
