@@ -3,6 +3,15 @@ import java.util.*;
 import javax.swing.ImageIcon;
 import java.net.*;
 
+/**
+ * Twitter Server 
+ * <p>
+ * Purdue University -- CS18000 -- Team Project
+ *
+ * @author Yajushi
+ * @version Nov 14, 2024
+ */
+
 public class TwitterServer implements Runnable, TwitterServerInterface {
     Socket socket;
     private ArrayList<User> users = new ArrayList<User>();
@@ -24,7 +33,7 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
         try {
             PrintWriter pw = new PrintWriter(new FileOutputStream(new File("users.txt"), false));
             synchronized (obj) {
-                for (User u : users) {// Write users
+                for (User u : users) { // Write users
                     u.writeFile(); //write specifc user info
                     String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture().getDescription();
                     String userInfo = u.getName() + ", " + u.getUsername() + ", " + u.getPassword() + ", " + picture;
@@ -73,7 +82,7 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
 
                 ArrayList<User> blocked = new ArrayList<User>();
                 username = bfr.readLine();
-                while (username != null){
+                while (username != null) {
                     blocked.add(getUser(username));
                     username = bfr.readLine();
                 }
@@ -87,7 +96,8 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                 String postInfo = bfr.readLine();
                 String[] postArray = postInfo.split(", ");
                 ImageIcon im = (postArray[1].equals("null")) ? null : new ImageIcon(postArray[1]);
-                Post p = new Post(postArray[0], im, getUser(postArray[4]), Integer.parseInt(postArray[2]), Integer.parseInt(postArray[3]));
+                Post p = new Post(postArray[0], im, getUser(postArray[4]),
+                                  Integer.parseInt(postArray[2]), Integer.parseInt(postArray[3]));
                 synchronized (obj) {
                     posts.add(p);
                 }
@@ -481,7 +491,7 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                     }                
                 } 
             } catch (IOException e) {
-                    System.out.println("Error: Could not read values from client");
+                System.out.println("Error: Could not read values from client");
             }
 
         }
