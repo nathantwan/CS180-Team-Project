@@ -134,7 +134,8 @@ public class UserTest {
         assertEquals("newPath", testUser1.getProfilePicture().getDescription());
     }
 
-    //Creates a new user that is identical to testUser1 and ensures that the method returns true when compared to one another
+    //Creates a new user that is identical to testUser1 and 
+    //ensures that the method returns true when compared to one another
     @Test
     public void testEquals() {
         User newUser = new User("Sarah", "Leitzel", "SarahL", "password123", testImageIcon);
@@ -195,13 +196,13 @@ public class UserTest {
         testUser1.blockUser(testUser3);
 
         String expected = "------------\n" 
-        + "Name: Sarah Leitzel\n" 
-        + "Username: SarahL\n" 
-        + "Profile Picture: s\n" 
-        + "Friends: William Smith\n" 
-        + "------------";
+            + "Name: Sarah Leitzel\n" 
+            + "Username: SarahL\n" 
+            + "Profile Picture: s\n" 
+            + "Friends: William Smith\n" 
+            + "------------";
 
-    assertEquals(expected, testUser1.toString());
+        assertEquals(expected, testUser1.toString());
     }
 
     //Ensures that the displayFeed method properly handles media feed from friends and blocked users
