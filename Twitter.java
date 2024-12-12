@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
  * @version Nov 3, 2024
  */
 
-public class Twitter extends Thread implements TwitterInterface {
+public class Twitter extends Thread  {
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Post> posts = new ArrayList<Post>();
     private final String menu = "1 - Add a friend\n" + "2 - Remove a friend\n"
@@ -109,7 +109,7 @@ public class Twitter extends Thread implements TwitterInterface {
             synchronized (obj) {
                 for (User u : users) { // Write users
                     u.writeFile(); //write specifc user info
-                    String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture().getDescription();
+                    String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture();
                     String userInfo = u.getName() + ", " + u.getUsername() + ", " + u.getPassword() + ", " + picture;
                     pw.println(userInfo);
                 }
@@ -135,7 +135,7 @@ public class Twitter extends Thread implements TwitterInterface {
                 String[] uArray = userInfo.split(", ");
                 String firstname = uArray[0].substring(0, uArray[0].indexOf(" "));
                 String lastname = uArray[0].substring(uArray[0].indexOf(" ") + 1);
-                ImageIcon image = (uArray[3].equals("null")) ? null : new ImageIcon(uArray[3]);
+                String image = (uArray[3].equals("null")) ? null : (uArray[3]);
                 synchronized (obj) {
                     users.add(new User(firstname, lastname, uArray[1], uArray[2], image));
                 }
@@ -169,7 +169,7 @@ public class Twitter extends Thread implements TwitterInterface {
                 bfr = new BufferedReader(new FileReader(new File(file)));
                 String postInfo = bfr.readLine();
                 String[] postArray = postInfo.split(", ");
-                ImageIcon im = (postArray[1].equals("null")) ? null : new ImageIcon(postArray[1]);
+                String im = (postArray[1].equals("null")) ? null : postArray[1];
                 Post p = new Post(postArray[0], im, getUser(postArray[4]), 
                                   Integer.parseInt(postArray[2]), Integer.parseInt(postArray[3]));
                 synchronized (obj) {
@@ -323,7 +323,7 @@ public class Twitter extends Thread implements TwitterInterface {
                 }
             }
             if (option == 9) { //edit post
-                System.out.print("Please enter the number of the ")
+                System.out.print("Please enter the number of the ");
                 System.out.println("post you would like to edit (Note the first post is number 0):");
                 int postNum;
                 synchronized (obj) {
