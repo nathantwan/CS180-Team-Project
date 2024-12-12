@@ -12,9 +12,9 @@ import java.io.*;
  * @version Nov 3, 2024
  */
 
-public class Post implements PostInterface { 
+public class Post {
     private String caption;
-    private ImageIcon image;
+    private String image;
     private int upvote;
     private int downvote;
     private User user;
@@ -24,7 +24,7 @@ public class Post implements PostInterface {
     public final Object obj = new Object();
 
     //write a constructor that intializes all fields
-    public Post(String caption, ImageIcon image, User user) throws InvalidPostException {
+    public Post(String caption, String image, User user) throws InvalidPostException {
         if (caption == null || caption.isEmpty() || user == null) {
             throw new InvalidPostException("Invalid Post");
         }
@@ -39,7 +39,7 @@ public class Post implements PostInterface {
         }
     }
 
-    public Post(String caption, ImageIcon image, User user, int upvote, int downvote) throws InvalidPostException {
+    public Post(String caption, String image, User user, int upvote, int downvote) throws InvalidPostException {
         if (caption == null || caption.isEmpty() || user == null) {
             throw new InvalidPostException("Invalid Post");
         }
@@ -76,7 +76,7 @@ public class Post implements PostInterface {
         return caption;
     }
 
-    public ImageIcon getImage() {
+    public String getImage() {
         return image;
     }
 
@@ -86,6 +86,10 @@ public class Post implements PostInterface {
 
     public int getDownvote() {
         return downvote;
+    }
+
+    public int getTotalVotes() {
+        return upvote - downvote;
     }
 
     public User getUser() {
@@ -104,7 +108,7 @@ public class Post implements PostInterface {
         this.downvote++;
     }
 
-    public void setPost(String text, ImageIcon pic) {
+    public void setPost(String text, String pic) {
         this.caption = text;
         this.image = pic;
     }
@@ -163,19 +167,33 @@ public class Post implements PostInterface {
     }
 
     public boolean equals(Object o) {
-        if (!(this == o)) {
+        if (!(o instanceof Post)) {
             return false;
         }
         Post compare = (Post) o;
+
+        // if (compare.getImage() == null) {
+        //     if (image == null) {return compare.getCaption().equals(caption) && compare.getUser().equals(user);}
+        //     return false;
+        // }
+        // if (image == null) {
+        //     return false;
+        // }
+
+        if (image == null && compare.getImage() == null) {
+            return compare.getCaption().equals(caption) && compare.getUser().equals(user);
+        }
+        if (image == null || compare.getImage() == null) {return false;}
         return compare.getCaption().equals(caption) &&
                 compare.getImage().equals(image) && compare.getUser().equals(user);
     }
 
     public String toString() { 
         String s = "------------\n";
-        s += user.toString();
+        s += "User: " + user.getUsername();
+        s += "Profile Picture: " + user.getProfilePicture();
         s += "Caption: " + caption + "\n";
-        String im = (image == null) ? "null" : image.getDescription();
+        String im = (image == null) ? "null" : image;
         s += "Image: " + im + "\n";
         s += "Comments: ";
         if (comments.size() == 0) {
@@ -196,11 +214,12 @@ public class Post implements PostInterface {
     public int getPostNumber() {
         return postNumber;
     }
-    public void writePost() {
+    public String writePost() {
         String fileName = "Post" + postNumber + ".txt";
         File f = new File(fileName);
-        try (PrintWriter pw = new PrintWriter(new FileWriter(f))) {
-            String im = (image == null) ? "null" : image.getDescription();
+        try (PrintWriter pw = new PrintWriter(new FileWriter(f));
+        PrintWriter pw2 = new PrintWriter(new FileWriter(new File("posts.txt")))) {
+            String im = (image == null) ? "null" : image;
             pw.write(caption + ", " +  im + ", " 
                      + upvote + ", " + downvote + ", " + user.getUsername() + ", " + postNumber + "\n");
             if (!(comments == null || comments.size() == 0)) {
@@ -210,11 +229,13 @@ public class Post implements PostInterface {
                              + ", " + comment.getCommenter().getUsername() + "\n");
                 }
             }
+            pw2.write(fileName);
 
 
         } catch (Exception e) {
             System.out.println("File not created");
         }
+        return fileName;
 
     }
 
