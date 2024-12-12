@@ -12,48 +12,70 @@ import java.net.*;
  * @version Nov 14, 2024
  */
 
-public class TwitterServer implements Runnable, TwitterServerInterface {
+public class TwitterServer implements Runnable {
     Socket socket;
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Post> posts = new ArrayList<Post>();
     private final Object obj = new Object();
-
-    public TwitterServer(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles, Socket socket) {
-        readFile(usernameFile, userFiles, postFiles);
-        this.socket = socket;
-    }
     
-    public TwitterServer(Socket socket) {
+    public TwitterServer(Socket socket){
+        readFile();
         this.socket = socket;
+        
+        for (User u : users) {System.out.println(u.getUsername());}
+        // users.add(new User("y", "g", "yg1", "1234567", null));
+        // users.add(new User("y", "g", "yg2", "1234567", null));
+        // users.add(new User("y", "g", "yg3", "1234567", null));
+
+        // try{
+        // posts.add(new Post("idk1", null, users.get(0), 0, 0));
+        // posts.add(new Post("idk2", null, users.get(0), 0, 0));} catch (Exception e) {}
     }
 
     
 
     public void writeFile() {
         try {
+            PrintWriter pwD = new PrintWriter(new FileOutputStream(new File("DATABASE.txt"), false));
             PrintWriter pw = new PrintWriter(new FileOutputStream(new File("users.txt"), false));
             synchronized (obj) {
                 for (User u : users) { // Write users
                     u.writeFile(); //write specifc user info
-                    String picture = (u.getProfilePicture() == null) ? "null" : u.getProfilePicture().getDescription();
+                    String picture = (u.getProfilePicture() == null || u.getProfilePicture().isEmpty()) ? "null" : u.getProfilePicture();
                     String userInfo = u.getName() + ", " + u.getUsername() + ", " + u.getPassword() + ", " + picture;
                     pw.println(userInfo);
                 }
+                
+                for (Post p : posts) { //write posts
+                    pwD.println(p.writePost());
+                }
             }
+            pw.flush();
             pw.close();
+            pwD.close();
         } catch (FileNotFoundException e) {
             System.out.println("Error: File not created");
         }
-        synchronized (obj) {
-            for (Post p : posts) { //write posts
-                p.writePost();
-            }
-        }
+        
     }
-    public void readFile(String usernameFile, ArrayList<String> userFiles, ArrayList<String> postFiles) {
+    public void readFile() {
+        System.out.println("reading");
         try {
-            BufferedReader bfr = new BufferedReader(new FileReader(new File(usernameFile)));
-            while (true) { //read users
+            
+            BufferedReader bfr = new BufferedReader(new FileReader(new File("DATABASE.txt")));
+
+            ArrayList<String> userFiles = new ArrayList<>();
+            ArrayList<String> postFiles = new ArrayList<>();
+
+            String postFile = bfr.readLine();  
+            while (postFile != null && postFile.isEmpty() == false) {
+                postFiles.add(postFile);
+                postFile = bfr.readLine();
+            }
+
+
+            bfr = new BufferedReader(new FileReader(new File("users.txt")));
+            while (true) { //read users                
                 String userInfo = bfr.readLine();
                 if (userInfo == null) {
                     break;
@@ -61,10 +83,12 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                 String[] uArray = userInfo.split(", ");
                 String firstname = uArray[0].substring(0, uArray[0].indexOf(" "));
                 String lastname = uArray[0].substring(uArray[0].indexOf(" ") + 1);
-                ImageIcon image = (uArray[3].equals("null")) ? null : new ImageIcon(uArray[3]);
+                String image = (uArray[3].equals("null")) ? null : uArray[3];
                 synchronized (obj) {
                     users.add(new User(firstname, lastname, uArray[1], uArray[2], image));
                 }
+                String usertxt = uArray[1] + ".txt";
+                userFiles.add(usertxt);
             }
 
             for (String file : userFiles) { //get specific user info
@@ -95,7 +119,8 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                 bfr = new BufferedReader(new FileReader(new File(file)));
                 String postInfo = bfr.readLine();
                 String[] postArray = postInfo.split(", ");
-                ImageIcon im = (postArray[1].equals("null")) ? null : new ImageIcon(postArray[1]);
+                String im = (postArray[1].equals("null")) ? null : (postArray[1]);
+                try{
                 Post p = new Post(postArray[0], im, getUser(postArray[4]),
                                   Integer.parseInt(postArray[2]), Integer.parseInt(postArray[3]));
                 synchronized (obj) {
@@ -109,11 +134,11 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                     String[] commentArray = commentInfo.split(", ");
                     p.addComment(commentArray[0], p.getUser(), getUser(commentArray[2]), p);
 
-                }
+                }} catch (InvalidPostException e) {}
             }
 
             bfr.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Error: Files could not be read");
         }
     }
@@ -176,26 +201,24 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
         }
     }
     public String option6(User user) { //display feed
-        ArrayList<Post> feed;
+        List<Post> feed;
         synchronized (obj) {
             feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
         }   
-        if (feed.size() == 0) {
-            return "There are no posts in your feed.\nstop";
-        }
         String toReturn = "";
         for (Post p : feed) {
-            toReturn += p.toString() + "\n";
+            toReturn += p.getPostNumber() + ",";
         }
-        toReturn = toReturn.substring(0, toReturn.length() - 1) + "\nstop";
-        return toReturn;
+        if (toReturn.isEmpty()) {return "";}
+        return toReturn.substring(0, toReturn.length()-1);
     }
     public void option7(User user, String caption, String path) throws InvalidPostException { //create post
-        ImageIcon image;
+        String image;
         if (path == null) {
             image = null;
         } else {
-            image = new ImageIcon(path);
+            image = path;
         }
         Post p = new Post(caption, image, user);
         synchronized (obj) {
@@ -203,10 +226,15 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
         }
     }
     public String option8(int postNum, User user) { //delete post
-        if (postNum < 0 || postNum >= posts.size()) {
+        List<Post> feed;
+        synchronized (obj) {
+            feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
+        }  
+        if (postNum < 0 || postNum >= feed.size()) {
             return "Error: Post could not be found";
         } else {
-            Post p = posts.get(postNum);
+            Post p = feed.get(postNum);
             if (p.getUser().equals(user) == false) {
                 return "Error: You do not have the permissions to delete this post";
             } else {
@@ -216,10 +244,15 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
         }
     }
     public String option9(int postNum, String caption, User user) { //edit post
-        if (postNum < 0 || postNum >= posts.size()) {
+        List<Post> feed;
+        synchronized (obj) {
+            feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
+        }  
+        if (postNum < 0 || postNum >= feed.size()) {
             return "Error: Post could not be found";
         } else {
-            Post p = posts.get(postNum);
+            Post p = feed.get(postNum);
             if (p.getUser().equals(user) == false) {
                 return "Error: You do not have the permissions to edit this post";
             } else {
@@ -234,10 +267,15 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
         }
     }
     public String option10(int postNum, String comment, User user) { //create comment
-        if (postNum < 0 || postNum >= posts.size()) {
+        List<Post> feed;
+        synchronized (obj) {
+            feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
+        }  
+        if (postNum < 0 || postNum >= feed.size()) {
             return "Error: Post could not be found";
         } else {
-            Post p = posts.get(postNum);
+            Post p = feed.get(postNum);
             if (comment == null || comment.length() == 0) {
                 return "Error: Invalid comment";
             } else {
@@ -247,10 +285,15 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
         }
     }
     public String option11(int postNum, int commentNum, User user) { //delete comment
-        if (postNum < 0 || postNum >= posts.size()) {
+        List<Post> feed;
+        synchronized (obj) {
+            feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
+        }  
+        if (postNum < 0 || postNum >= feed.size()) {
             return "Error: Post could not be found";
         } else {
-            Post p = posts.get(postNum);
+            Post p = feed.get(postNum);
             if (commentNum < 0 || commentNum >= p.getComments().size()) {
                 return "Error: Comment could not be found";
             } else {
@@ -265,10 +308,15 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
         }
     }
     public String option12(int postNum, int commentNum, String newComment, User user) { //edit comment
-        if (postNum < 0 || postNum >= posts.size()) {
+        List<Post> feed;
+        synchronized (obj) {
+            feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
+        }  
+        if (postNum < 0 || postNum >= feed.size()) {
             return "Error: Post could not be found";
         } else {
-            Post p = posts.get(postNum);
+            Post p = feed.get(postNum);
             if (commentNum < 0 || commentNum >= p.getComments().size()) {
                 return "Error: Comment could not be found";
             } else {
@@ -286,20 +334,30 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
             }
         }
     }
-    public String option13(int postNum) { //upvote post
-        if (postNum < 0 || postNum >= posts.size()) {
+    public String option13(int postNum, User user) { //upvote post
+        List<Post> feed;
+        synchronized (obj) {
+            feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
+        }  
+        if (postNum < 0 || postNum >= feed.size()) {
             return "Error: Post could not be found";
         } else {
-            Post p = posts.get(postNum);
+            Post p = feed.get(postNum);
             p.incrementUpvote();
             return "Post upvoted";
         }
     }
-    public String option14(int postNum) { //downvote post
-        if (postNum < 0 || postNum >= posts.size()) {
+    public String option14(int postNum, User user) { //downvote post
+        List<Post> feed;
+        synchronized (obj) {
+            feed = user.displayFeed(posts);
+            feed.sort((p1, p2) -> Integer.compare(p2.getTotalVotes(), p1.getTotalVotes()));
+        }  
+        if (postNum < 0 || postNum >= feed.size()) {
             return "Error: Post could not be found";
         } else {
-            Post p = posts.get(postNum);
+            Post p = feed.get(postNum);
             p.incrementDownvote();
             return "Post downvoted";
         }
@@ -309,6 +367,32 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
     }
     public void option16() { //end run
         writeFile();
+        try {socket.close();} catch (IOException e) {System.out.println("no close");}
+    }
+    public String sendUsers(User user) {
+        String toRet = "";
+        for (User u : users) {
+            if (!u.equals(user)) {
+                toRet += u.getUsername() + "\n";
+            }
+        }
+        if (toRet.isEmpty()) {toRet += "No other users\n";}
+        toRet += "stop";
+        return toRet;
+    }
+    public String postInfo(int postNum) {
+        Post post = null;
+        for (Post p : posts) {
+            if (p.getPostNumber() == postNum) {post = p; break;}
+        }
+
+        String s = "";
+        s += post.getImage() + "," + post.getCaption() + "," + post.getUpvote() + "," + post.getDownvote()
+            + ",";
+        for (Comment c : post.getComments()) {
+           s += c.getCommenter().getUsername() + ": " + c.getText() + ",";
+        }
+        return s.substring(0, s.length()-1);
     }
 
     public void run() {
@@ -317,22 +401,26 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                 User user = null;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter writer = new PrintWriter(socket.getOutputStream());
-                String option;
-                boolean runLoop = true;
-                while (runLoop) {
-                    option = reader.readLine();
+                String option = reader.readLine();
+                while (option != null) {
+                    if (option.equals("Get Username")) {
+                        writer.println(user.getUsername()); writer.flush();
+                    }
                     if (option.equals("Login")) {
                         String username = reader.readLine();
+                        String password = reader.readLine();
                         User tempUser = getUser(username); 
                         boolean tempUserNull = (tempUser != null);
+                        if (!tempUserNull){
                         writer.write(String.valueOf(tempUserNull));
+                        System.out.println(String.valueOf(tempUserNull));
                         writer.println();
-                        writer.flush();
+                        writer.flush();}
 
                         if (tempUser != null) {
-                            String password = reader.readLine();
                             boolean pass = tempUser.getPassword().equals(password);
                             writer.write(String.valueOf(pass));
+                            System.out.println(String.valueOf(pass));
                             writer.println();
                             writer.flush();
 
@@ -344,14 +432,10 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                     if (option.equals("Sign Up")) {
                         String firstName = reader.readLine();
                         String lastName = reader.readLine();
-                        String pfp = reader.readLine();
-                        ImageIcon image = (pfp.equals("null")) ? null : new ImageIcon(pfp);
                         String username = reader.readLine();
                         User tempUser = getUser(username);
                         boolean tempUserNull = (tempUser == null);
-                        System.out.println(tempUserNull);
-                        writer.write(String.valueOf(tempUserNull));
-                        writer.println();
+                        writer.println(String.valueOf(tempUserNull));
                         writer.flush();
 
                         if (tempUserNull) {
@@ -360,6 +444,8 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                             writer.write(String.valueOf(validPass));
                             writer.println();
                             writer.flush();
+                            String pfp = reader.readLine();
+                            String image = (pfp.equals("null")) ? null : pfp;
 
                             if (validPass) {
                                 user = new User(firstName, lastName, username, password, image);
@@ -407,9 +493,11 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                     }
                     if (option.equals("Option 6")) {
                         String output = option6(user);
+                        System.out.println(output);
                         writer.write(output);
                         writer.println();
                         writer.flush();
+                        
                     }
                     if (option.equals("Option 7")) {
                         String caption = reader.readLine();
@@ -463,14 +551,14 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                     }
                     if (option.equals("Option 13")) {
                         int postNum = Integer.parseInt(reader.readLine());
-                        String output = option13(postNum);
+                        String output = option13(postNum, user);
                         writer.write(output);
                         writer.println();
                         writer.flush();
                     }
                     if (option.equals("Option 14")) {
                         int postNum = Integer.parseInt(reader.readLine());
-                        String output = option14(postNum);
+                        String output = option14(postNum, user);
                         writer.write(output);
                         writer.println();
                         writer.flush();
@@ -485,10 +573,24 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
                     }
                     if (option.equals("Option 16")) {
                         option16();
-                        runLoop = false;
                         socket.close();
                         break;
-                    }                
+                    }
+                    if (option.equals("Get Users")) {
+                        String output = sendUsers(user);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    if (option.equals("Post Info")) {
+                        int postNum = Integer.parseInt(reader.readLine());
+                        System.out.println(postNum);
+                        String output = postInfo(postNum);
+                        writer.write(output);
+                        writer.println();
+                        writer.flush();
+                    }
+                    option = reader.readLine();                
                 } 
             } catch (IOException e) {
                 System.out.println("Error: Could not read values from client");
@@ -499,7 +601,7 @@ public class TwitterServer implements Runnable, TwitterServerInterface {
     
     
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         try {
 
             ServerSocket serverSocket = new ServerSocket(4242);
