@@ -7,7 +7,7 @@
  * @version Nov 3, 2024
  */
 
-public class Comment implements CommentInterface {
+public class Comment {
     private String text;
     private User postOwner;
     private User commenter;
