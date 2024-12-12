@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
  * @author Yajushi 
  * @version Nov 3, 2024
  */
-public class User implements UserInterface {
+public class User {
     private ArrayList<User> friends = new ArrayList<User>();
     private ArrayList<User> blocked = new ArrayList<User>();
 
@@ -19,12 +19,12 @@ public class User implements UserInterface {
     private String username;
     private String password;
     
-    private ImageIcon profilePicture;
+    private String profilePicture;
 
     private static ArrayList<String> usernameArray = new ArrayList<String>();
     private final Object obj = new Object();
 
-    public User(String firstName, String lastName, String username, String password, ImageIcon profilePicture) {
+    public User(String firstName, String lastName, String username, String password, String profilePicture) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -100,7 +100,7 @@ public class User implements UserInterface {
         synchronized (obj) {
             input = s.nextLine();
         }
-        profilePicture = new ImageIcon(input);
+        profilePicture = input;
     }
 
     public String getPassword() { //can be used for password protection login
@@ -119,7 +119,7 @@ public class User implements UserInterface {
         String name = firstName + " " + lastName;
         return name;
     }
-    public ImageIcon getProfilePicture() {
+    public String getProfilePicture() {
         return profilePicture;
     }
     public ArrayList<User> getFriends() {
@@ -137,7 +137,7 @@ public class User implements UserInterface {
     public void setBlocked(ArrayList<User> blocked) {
         this.blocked = blocked;
     }
-    public void setProfilePicure(ImageIcon profilePic) {
+    public void setProfilePicture(String profilePic) {
         this.profilePicture = profilePic;
     }
     public boolean equals(Object other) { //use for user search
@@ -193,7 +193,7 @@ public class User implements UserInterface {
         String s = "------------\n";
         s += "Name: " + getName() + "\n";
         s += "Username: " + username + "\n";
-        String im = (profilePicture == null) ? "null" : profilePicture.getDescription();
+        String im = (profilePicture == null) ? "null" : profilePicture;
         s += "Profile Picture: " + im + "\n";
         s += "Friends: ";
         if (friends.size() == 0) {
@@ -214,7 +214,7 @@ public class User implements UserInterface {
     public ArrayList<Post> displayFeed(ArrayList<Post> posts) {
         ArrayList<Post> feed = new ArrayList<Post>();
         for (Post p : posts) {
-            if (friends.contains(p.getUser())) {
+            if (friends.contains(p.getUser()) || p.getUser().getUsername().equals(username)) {
                 feed.add(p);
             }
         }
